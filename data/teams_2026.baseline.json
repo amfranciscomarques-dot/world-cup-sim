@@ -1,0 +1,446 @@
+{
+  "_about": "Base ratings are derived from the June 2026 FIFA Men's World Ranking (0-100 scale, ~94 strongest). Squads are a curated, EDITABLE subset of each nation's likely starters/stars as of June 2026 - not full 26-player lists. Player 'rating' (0-100) and 'pos' (GK/DEF/MID/FWD) feed the lineup-aggregation factor. Replace/extend freely; the loader and engine adapt automatically.",
+  "teams": [
+    {"name": "Argentina", "rating": 94, "players": [
+      {"name": "Emiliano Martinez", "pos": "GK", "rating": 88},
+      {"name": "Cristian Romero", "pos": "DEF", "rating": 86},
+      {"name": "Nicolas Otamendi", "pos": "DEF", "rating": 81},
+      {"name": "Nahuel Molina", "pos": "DEF", "rating": 80},
+      {"name": "Rodrigo De Paul", "pos": "MID", "rating": 84},
+      {"name": "Enzo Fernandez", "pos": "MID", "rating": 86},
+      {"name": "Alexis Mac Allister", "pos": "MID", "rating": 86},
+      {"name": "Lionel Messi", "pos": "FWD", "rating": 90},
+      {"name": "Julian Alvarez", "pos": "FWD", "rating": 87},
+      {"name": "Lautaro Martinez", "pos": "FWD", "rating": 86}
+    ]},
+    {"name": "Spain", "rating": 93, "players": [
+      {"name": "Unai Simon", "pos": "GK", "rating": 84},
+      {"name": "Robin Le Normand", "pos": "DEF", "rating": 82},
+      {"name": "Dani Carvajal", "pos": "DEF", "rating": 83},
+      {"name": "Marc Cucurella", "pos": "DEF", "rating": 81},
+      {"name": "Rodri", "pos": "MID", "rating": 90},
+      {"name": "Pedri", "pos": "MID", "rating": 88},
+      {"name": "Fabian Ruiz", "pos": "MID", "rating": 83},
+      {"name": "Lamine Yamal", "pos": "FWD", "rating": 89},
+      {"name": "Nico Williams", "pos": "FWD", "rating": 85},
+      {"name": "Alvaro Morata", "pos": "FWD", "rating": 80}
+    ]},
+    {"name": "France", "rating": 92, "players": [
+      {"name": "Mike Maignan", "pos": "GK", "rating": 86},
+      {"name": "William Saliba", "pos": "DEF", "rating": 86},
+      {"name": "Dayot Upamecano", "pos": "DEF", "rating": 83},
+      {"name": "Theo Hernandez", "pos": "DEF", "rating": 83},
+      {"name": "Jules Kounde", "pos": "DEF", "rating": 83},
+      {"name": "Aurelien Tchouameni", "pos": "MID", "rating": 85},
+      {"name": "Eduardo Camavinga", "pos": "MID", "rating": 84},
+      {"name": "Antoine Griezmann", "pos": "MID", "rating": 85},
+      {"name": "Kylian Mbappe", "pos": "FWD", "rating": 92},
+      {"name": "Ousmane Dembele", "pos": "FWD", "rating": 86},
+      {"name": "Marcus Thuram", "pos": "FWD", "rating": 83}
+    ]},
+    {"name": "England", "rating": 91, "players": [
+      {"name": "Jordan Pickford", "pos": "GK", "rating": 83},
+      {"name": "John Stones", "pos": "DEF", "rating": 84},
+      {"name": "Marc Guehi", "pos": "DEF", "rating": 82},
+      {"name": "Kyle Walker", "pos": "DEF", "rating": 80},
+      {"name": "Declan Rice", "pos": "MID", "rating": 87},
+      {"name": "Jude Bellingham", "pos": "MID", "rating": 89},
+      {"name": "Cole Palmer", "pos": "MID", "rating": 85},
+      {"name": "Phil Foden", "pos": "FWD", "rating": 86},
+      {"name": "Bukayo Saka", "pos": "FWD", "rating": 87},
+      {"name": "Harry Kane", "pos": "FWD", "rating": 89}
+    ]},
+    {"name": "Portugal", "rating": 90, "players": [
+      {"name": "Diogo Costa", "pos": "GK", "rating": 84},
+      {"name": "Ruben Dias", "pos": "DEF", "rating": 86},
+      {"name": "Joao Cancelo", "pos": "DEF", "rating": 82},
+      {"name": "Nuno Mendes", "pos": "DEF", "rating": 83},
+      {"name": "Bruno Fernandes", "pos": "MID", "rating": 87},
+      {"name": "Vitinha", "pos": "MID", "rating": 85},
+      {"name": "Bernardo Silva", "pos": "MID", "rating": 85},
+      {"name": "Cristiano Ronaldo", "pos": "FWD", "rating": 83},
+      {"name": "Rafael Leao", "pos": "FWD", "rating": 85},
+      {"name": "Goncalo Ramos", "pos": "FWD", "rating": 81}
+    ]},
+    {"name": "Brazil", "rating": 90, "players": [
+      {"name": "Alisson", "pos": "GK", "rating": 88},
+      {"name": "Marquinhos", "pos": "DEF", "rating": 85},
+      {"name": "Gabriel Magalhaes", "pos": "DEF", "rating": 84},
+      {"name": "Danilo", "pos": "DEF", "rating": 79},
+      {"name": "Casemiro", "pos": "MID", "rating": 82},
+      {"name": "Bruno Guimaraes", "pos": "MID", "rating": 85},
+      {"name": "Lucas Paqueta", "pos": "MID", "rating": 82},
+      {"name": "Vinicius Junior", "pos": "FWD", "rating": 90},
+      {"name": "Rodrygo", "pos": "FWD", "rating": 85},
+      {"name": "Raphinha", "pos": "FWD", "rating": 85},
+      {"name": "Endrick", "pos": "FWD", "rating": 80}
+    ]},
+    {"name": "Netherlands", "rating": 86, "players": [
+      {"name": "Bart Verbruggen", "pos": "GK", "rating": 80},
+      {"name": "Virgil van Dijk", "pos": "DEF", "rating": 87},
+      {"name": "Nathan Ake", "pos": "DEF", "rating": 82},
+      {"name": "Denzel Dumfries", "pos": "DEF", "rating": 81},
+      {"name": "Frenkie de Jong", "pos": "MID", "rating": 86},
+      {"name": "Tijjani Reijnders", "pos": "MID", "rating": 83},
+      {"name": "Xavi Simons", "pos": "MID", "rating": 84},
+      {"name": "Cody Gakpo", "pos": "FWD", "rating": 84},
+      {"name": "Memphis Depay", "pos": "FWD", "rating": 81}
+    ]},
+    {"name": "Germany", "rating": 86, "players": [
+      {"name": "Marc-Andre ter Stegen", "pos": "GK", "rating": 86},
+      {"name": "Antonio Rudiger", "pos": "DEF", "rating": 85},
+      {"name": "Jonathan Tah", "pos": "DEF", "rating": 82},
+      {"name": "Joshua Kimmich", "pos": "MID", "rating": 86},
+      {"name": "Aleksandar Pavlovic", "pos": "MID", "rating": 80},
+      {"name": "Florian Wirtz", "pos": "MID", "rating": 88},
+      {"name": "Jamal Musiala", "pos": "FWD", "rating": 89},
+      {"name": "Kai Havertz", "pos": "FWD", "rating": 83},
+      {"name": "Leroy Sane", "pos": "FWD", "rating": 82}
+    ]},
+    {"name": "Morocco", "rating": 85, "players": [
+      {"name": "Yassine Bounou", "pos": "GK", "rating": 84},
+      {"name": "Achraf Hakimi", "pos": "DEF", "rating": 86},
+      {"name": "Nayef Aguerd", "pos": "DEF", "rating": 81},
+      {"name": "Noussair Mazraoui", "pos": "DEF", "rating": 81},
+      {"name": "Sofyan Amrabat", "pos": "MID", "rating": 81},
+      {"name": "Azzedine Ounahi", "pos": "MID", "rating": 79},
+      {"name": "Brahim Diaz", "pos": "MID", "rating": 83},
+      {"name": "Hakim Ziyech", "pos": "FWD", "rating": 80},
+      {"name": "Youssef En-Nesyri", "pos": "FWD", "rating": 80}
+    ]},
+    {"name": "Belgium", "rating": 85, "players": [
+      {"name": "Thibaut Courtois", "pos": "GK", "rating": 89},
+      {"name": "Wout Faes", "pos": "DEF", "rating": 78},
+      {"name": "Timothy Castagne", "pos": "DEF", "rating": 78},
+      {"name": "Zeno Debast", "pos": "DEF", "rating": 77},
+      {"name": "Kevin De Bruyne", "pos": "MID", "rating": 87},
+      {"name": "Youri Tielemans", "pos": "MID", "rating": 82},
+      {"name": "Amadou Onana", "pos": "MID", "rating": 81},
+      {"name": "Jeremy Doku", "pos": "FWD", "rating": 83},
+      {"name": "Romelu Lukaku", "pos": "FWD", "rating": 83},
+      {"name": "Leandro Trossard", "pos": "FWD", "rating": 81}
+    ]},
+    {"name": "Croatia", "rating": 84, "players": [
+      {"name": "Dominik Livakovic", "pos": "GK", "rating": 81},
+      {"name": "Josko Gvardiol", "pos": "DEF", "rating": 85},
+      {"name": "Josip Stanisic", "pos": "DEF", "rating": 79},
+      {"name": "Luka Modric", "pos": "MID", "rating": 83},
+      {"name": "Mateo Kovacic", "pos": "MID", "rating": 83},
+      {"name": "Marcelo Brozovic", "pos": "MID", "rating": 80},
+      {"name": "Andrej Kramaric", "pos": "FWD", "rating": 80},
+      {"name": "Ante Budimir", "pos": "FWD", "rating": 78}
+    ]},
+    {"name": "Colombia", "rating": 83, "players": [
+      {"name": "Camilo Vargas", "pos": "GK", "rating": 78},
+      {"name": "Daniel Munoz", "pos": "DEF", "rating": 80},
+      {"name": "Davinson Sanchez", "pos": "DEF", "rating": 80},
+      {"name": "James Rodriguez", "pos": "MID", "rating": 82},
+      {"name": "Richard Rios", "pos": "MID", "rating": 80},
+      {"name": "Luis Diaz", "pos": "FWD", "rating": 86},
+      {"name": "Jhon Duran", "pos": "FWD", "rating": 80},
+      {"name": "Jhon Cordoba", "pos": "FWD", "rating": 78}
+    ]},
+    {"name": "Uruguay", "rating": 83, "players": [
+      {"name": "Sergio Rochet", "pos": "GK", "rating": 78},
+      {"name": "Ronald Araujo", "pos": "DEF", "rating": 85},
+      {"name": "Jose Maria Gimenez", "pos": "DEF", "rating": 83},
+      {"name": "Federico Valverde", "pos": "MID", "rating": 88},
+      {"name": "Manuel Ugarte", "pos": "MID", "rating": 80},
+      {"name": "Nicolas De La Cruz", "pos": "MID", "rating": 80},
+      {"name": "Darwin Nunez", "pos": "FWD", "rating": 83},
+      {"name": "Facundo Pellistri", "pos": "FWD", "rating": 78}
+    ]},
+    {"name": "Mexico", "rating": 82, "players": [
+      {"name": "Luis Malagon", "pos": "GK", "rating": 79},
+      {"name": "Cesar Montes", "pos": "DEF", "rating": 78},
+      {"name": "Jorge Sanchez", "pos": "DEF", "rating": 76},
+      {"name": "Edson Alvarez", "pos": "MID", "rating": 82},
+      {"name": "Luis Chavez", "pos": "MID", "rating": 78},
+      {"name": "Hirving Lozano", "pos": "FWD", "rating": 81},
+      {"name": "Santiago Gimenez", "pos": "FWD", "rating": 81},
+      {"name": "Raul Jimenez", "pos": "FWD", "rating": 78}
+    ]},
+    {"name": "Senegal", "rating": 82, "players": [
+      {"name": "Edouard Mendy", "pos": "GK", "rating": 82},
+      {"name": "Kalidou Koulibaly", "pos": "DEF", "rating": 82},
+      {"name": "Abdou Diallo", "pos": "DEF", "rating": 78},
+      {"name": "Idrissa Gana Gueye", "pos": "MID", "rating": 80},
+      {"name": "Pape Matar Sarr", "pos": "MID", "rating": 80},
+      {"name": "Sadio Mane", "pos": "FWD", "rating": 84},
+      {"name": "Ismaila Sarr", "pos": "FWD", "rating": 80},
+      {"name": "Nicolas Jackson", "pos": "FWD", "rating": 81}
+    ]},
+    {"name": "USA", "rating": 81, "players": [
+      {"name": "Matt Turner", "pos": "GK", "rating": 78},
+      {"name": "Antonee Robinson", "pos": "DEF", "rating": 80},
+      {"name": "Chris Richards", "pos": "DEF", "rating": 78},
+      {"name": "Tyler Adams", "pos": "MID", "rating": 80},
+      {"name": "Weston McKennie", "pos": "MID", "rating": 81},
+      {"name": "Yunus Musah", "pos": "MID", "rating": 79},
+      {"name": "Gio Reyna", "pos": "MID", "rating": 80},
+      {"name": "Christian Pulisic", "pos": "FWD", "rating": 84},
+      {"name": "Folarin Balogun", "pos": "FWD", "rating": 79}
+    ]},
+    {"name": "Japan", "rating": 81, "players": [
+      {"name": "Zion Suzuki", "pos": "GK", "rating": 79},
+      {"name": "Ko Itakura", "pos": "DEF", "rating": 78},
+      {"name": "Takehiro Tomiyasu", "pos": "DEF", "rating": 79},
+      {"name": "Wataru Endo", "pos": "MID", "rating": 80},
+      {"name": "Hidemasa Morita", "pos": "MID", "rating": 78},
+      {"name": "Takefusa Kubo", "pos": "FWD", "rating": 82},
+      {"name": "Kaoru Mitoma", "pos": "FWD", "rating": 83},
+      {"name": "Ritsu Doan", "pos": "FWD", "rating": 80}
+    ]},
+    {"name": "Switzerland", "rating": 80, "players": [
+      {"name": "Yann Sommer", "pos": "GK", "rating": 83},
+      {"name": "Manuel Akanji", "pos": "DEF", "rating": 84},
+      {"name": "Nico Elvedi", "pos": "DEF", "rating": 78},
+      {"name": "Granit Xhaka", "pos": "MID", "rating": 83},
+      {"name": "Remo Freuler", "pos": "MID", "rating": 78},
+      {"name": "Dan Ndoye", "pos": "FWD", "rating": 79},
+      {"name": "Breel Embolo", "pos": "FWD", "rating": 79}
+    ]},
+    {"name": "Norway", "rating": 79, "players": [
+      {"name": "Orjan Nyland", "pos": "GK", "rating": 74},
+      {"name": "Kristoffer Ajer", "pos": "DEF", "rating": 77},
+      {"name": "Leo Ostigard", "pos": "DEF", "rating": 75},
+      {"name": "Martin Odegaard", "pos": "MID", "rating": 86},
+      {"name": "Sander Berge", "pos": "MID", "rating": 77},
+      {"name": "Erling Haaland", "pos": "FWD", "rating": 91},
+      {"name": "Alexander Sorloth", "pos": "FWD", "rating": 80}
+    ]},
+    {"name": "Turkiye", "rating": 79, "players": [
+      {"name": "Ugurcan Cakir", "pos": "GK", "rating": 80},
+      {"name": "Merih Demiral", "pos": "DEF", "rating": 79},
+      {"name": "Kaan Ayhan", "pos": "DEF", "rating": 76},
+      {"name": "Hakan Calhanoglu", "pos": "MID", "rating": 85},
+      {"name": "Orkun Kokcu", "pos": "MID", "rating": 79},
+      {"name": "Arda Guler", "pos": "MID", "rating": 82},
+      {"name": "Kenan Yildiz", "pos": "FWD", "rating": 82}
+    ]},
+    {"name": "Ecuador", "rating": 78, "players": [
+      {"name": "Hernan Galindez", "pos": "GK", "rating": 76},
+      {"name": "Piero Hincapie", "pos": "DEF", "rating": 82},
+      {"name": "William Pacho", "pos": "DEF", "rating": 81},
+      {"name": "Moises Caicedo", "pos": "MID", "rating": 85},
+      {"name": "Kendry Paez", "pos": "MID", "rating": 78},
+      {"name": "Enner Valencia", "pos": "FWD", "rating": 78}
+    ]},
+    {"name": "Austria", "rating": 78, "players": [
+      {"name": "Patrick Pentz", "pos": "GK", "rating": 76},
+      {"name": "David Alaba", "pos": "DEF", "rating": 82},
+      {"name": "Kevin Danso", "pos": "DEF", "rating": 78},
+      {"name": "Konrad Laimer", "pos": "MID", "rating": 80},
+      {"name": "Nicolas Seiwald", "pos": "MID", "rating": 78},
+      {"name": "Christoph Baumgartner", "pos": "MID", "rating": 80},
+      {"name": "Marcel Sabitzer", "pos": "MID", "rating": 80},
+      {"name": "Marko Arnautovic", "pos": "FWD", "rating": 77}
+    ]},
+    {"name": "South Korea", "rating": 78, "players": [
+      {"name": "Kim Seung-gyu", "pos": "GK", "rating": 76},
+      {"name": "Kim Min-jae", "pos": "DEF", "rating": 84},
+      {"name": "Kim Young-gwon", "pos": "DEF", "rating": 76},
+      {"name": "Hwang In-beom", "pos": "MID", "rating": 78},
+      {"name": "Lee Kang-in", "pos": "MID", "rating": 81},
+      {"name": "Hwang Hee-chan", "pos": "FWD", "rating": 79},
+      {"name": "Son Heung-min", "pos": "FWD", "rating": 84}
+    ]},
+    {"name": "Australia", "rating": 76, "players": [
+      {"name": "Mathew Ryan", "pos": "GK", "rating": 78},
+      {"name": "Harry Souttar", "pos": "DEF", "rating": 76},
+      {"name": "Jackson Irvine", "pos": "MID", "rating": 76},
+      {"name": "Aiden ONeill", "pos": "MID", "rating": 74},
+      {"name": "Martin Boyle", "pos": "FWD", "rating": 75},
+      {"name": "Mitchell Duke", "pos": "FWD", "rating": 73}
+    ]},
+    {"name": "Algeria", "rating": 76, "players": [
+      {"name": "Rais MBolhi", "pos": "GK", "rating": 74},
+      {"name": "Aissa Mandi", "pos": "DEF", "rating": 76},
+      {"name": "Ramy Bensebaini", "pos": "DEF", "rating": 78},
+      {"name": "Ismael Bennacer", "pos": "MID", "rating": 81},
+      {"name": "Riyad Mahrez", "pos": "FWD", "rating": 83},
+      {"name": "Said Benrahma", "pos": "FWD", "rating": 78}
+    ]},
+    {"name": "Egypt", "rating": 76, "players": [
+      {"name": "Mohamed El Shenawy", "pos": "GK", "rating": 76},
+      {"name": "Mohamed Abdelmonem", "pos": "DEF", "rating": 74},
+      {"name": "Mohamed Elneny", "pos": "MID", "rating": 76},
+      {"name": "Mohamed Salah", "pos": "FWD", "rating": 88},
+      {"name": "Omar Marmoush", "pos": "FWD", "rating": 82},
+      {"name": "Trezeguet", "pos": "FWD", "rating": 76}
+    ]},
+    {"name": "Iran", "rating": 78, "players": [
+      {"name": "Alireza Beiranvand", "pos": "GK", "rating": 76},
+      {"name": "Shojae Khalilzadeh", "pos": "DEF", "rating": 74},
+      {"name": "Saeid Ezatolahi", "pos": "MID", "rating": 75},
+      {"name": "Alireza Jahanbakhsh", "pos": "MID", "rating": 77},
+      {"name": "Saman Ghoddos", "pos": "MID", "rating": 76},
+      {"name": "Mehdi Taremi", "pos": "FWD", "rating": 82},
+      {"name": "Sardar Azmoun", "pos": "FWD", "rating": 79}
+    ]},
+    {"name": "Canada", "rating": 75, "players": [
+      {"name": "Maxime Crepeau", "pos": "GK", "rating": 75},
+      {"name": "Alphonso Davies", "pos": "DEF", "rating": 84},
+      {"name": "Moise Bombito", "pos": "DEF", "rating": 76},
+      {"name": "Stephen Eustaquio", "pos": "MID", "rating": 78},
+      {"name": "Jonathan David", "pos": "FWD", "rating": 82},
+      {"name": "Cyle Larin", "pos": "FWD", "rating": 76},
+      {"name": "Tajon Buchanan", "pos": "FWD", "rating": 77}
+    ]},
+    {"name": "Ivory Coast", "rating": 75, "players": [
+      {"name": "Yahia Fofana", "pos": "GK", "rating": 74},
+      {"name": "Odilon Kossounou", "pos": "DEF", "rating": 78},
+      {"name": "Evan Ndicka", "pos": "DEF", "rating": 78},
+      {"name": "Franck Kessie", "pos": "MID", "rating": 81},
+      {"name": "Seko Fofana", "pos": "MID", "rating": 78},
+      {"name": "Simon Adingra", "pos": "FWD", "rating": 78},
+      {"name": "Sebastien Haller", "pos": "FWD", "rating": 79}
+    ]},
+    {"name": "Sweden", "rating": 75, "players": [
+      {"name": "Robin Olsen", "pos": "GK", "rating": 76},
+      {"name": "Victor Lindelof", "pos": "DEF", "rating": 79},
+      {"name": "Emil Krafth", "pos": "DEF", "rating": 73},
+      {"name": "Dejan Kulusevski", "pos": "MID", "rating": 82},
+      {"name": "Anthony Elanga", "pos": "FWD", "rating": 80},
+      {"name": "Alexander Isak", "pos": "FWD", "rating": 86},
+      {"name": "Viktor Gyokeres", "pos": "FWD", "rating": 85}
+    ]},
+    {"name": "Czechia", "rating": 74, "players": [
+      {"name": "Jindrich Stanek", "pos": "GK", "rating": 76},
+      {"name": "Ladislav Krejci", "pos": "DEF", "rating": 78},
+      {"name": "David Doudera", "pos": "DEF", "rating": 72},
+      {"name": "Tomas Soucek", "pos": "MID", "rating": 80},
+      {"name": "Antonin Barak", "pos": "MID", "rating": 76},
+      {"name": "Patrik Schick", "pos": "FWD", "rating": 81},
+      {"name": "Adam Hlozek", "pos": "FWD", "rating": 77}
+    ]},
+    {"name": "Ghana", "rating": 74, "players": [
+      {"name": "Lawrence Ati-Zigi", "pos": "GK", "rating": 73},
+      {"name": "Alexander Djiku", "pos": "DEF", "rating": 75},
+      {"name": "Mohammed Kudus", "pos": "MID", "rating": 84},
+      {"name": "Thomas Partey", "pos": "MID", "rating": 81},
+      {"name": "Jordan Ayew", "pos": "FWD", "rating": 76},
+      {"name": "Inaki Williams", "pos": "FWD", "rating": 79},
+      {"name": "Antoine Semenyo", "pos": "FWD", "rating": 79}
+    ]},
+    {"name": "Bosnia-Herzegovina", "rating": 74, "players": [
+      {"name": "Ibrahim Sehic", "pos": "GK", "rating": 73},
+      {"name": "Sead Kolasinac", "pos": "DEF", "rating": 76},
+      {"name": "Miralem Pjanic", "pos": "MID", "rating": 78},
+      {"name": "Edin Dzeko", "pos": "FWD", "rating": 79},
+      {"name": "Ermedin Demirovic", "pos": "FWD", "rating": 78}
+    ]},
+    {"name": "Paraguay", "rating": 73, "players": [
+      {"name": "Roberto Fernandez", "pos": "GK", "rating": 74},
+      {"name": "Gustavo Gomez", "pos": "DEF", "rating": 79},
+      {"name": "Omar Alderete", "pos": "DEF", "rating": 76},
+      {"name": "Miguel Almiron", "pos": "MID", "rating": 79},
+      {"name": "Julio Enciso", "pos": "FWD", "rating": 78},
+      {"name": "Antonio Sanabria", "pos": "FWD", "rating": 75}
+    ]},
+    {"name": "Scotland", "rating": 73, "players": [
+      {"name": "Angus Gunn", "pos": "GK", "rating": 74},
+      {"name": "Andy Robertson", "pos": "DEF", "rating": 82},
+      {"name": "Kieran Tierney", "pos": "DEF", "rating": 78},
+      {"name": "Scott McTominay", "pos": "MID", "rating": 82},
+      {"name": "Billy Gilmour", "pos": "MID", "rating": 77},
+      {"name": "John McGinn", "pos": "MID", "rating": 79},
+      {"name": "Che Adams", "pos": "FWD", "rating": 75}
+    ]},
+    {"name": "Tunisia", "rating": 72, "players": [
+      {"name": "Aymen Dahmen", "pos": "GK", "rating": 73},
+      {"name": "Montassar Talbi", "pos": "DEF", "rating": 75},
+      {"name": "Ali Abdi", "pos": "DEF", "rating": 73},
+      {"name": "Aissa Laidouni", "pos": "MID", "rating": 77},
+      {"name": "Hannibal Mejbri", "pos": "MID", "rating": 76},
+      {"name": "Elias Achouri", "pos": "FWD", "rating": 75},
+      {"name": "Youssef Msakni", "pos": "FWD", "rating": 74}
+    ]},
+    {"name": "DR Congo", "rating": 72, "players": [
+      {"name": "Lionel Mpasi", "pos": "GK", "rating": 72},
+      {"name": "Chancel Mbemba", "pos": "DEF", "rating": 79},
+      {"name": "Arthur Masuaku", "pos": "DEF", "rating": 75},
+      {"name": "Charles Pickel", "pos": "MID", "rating": 74},
+      {"name": "Yoane Wissa", "pos": "FWD", "rating": 80},
+      {"name": "Silas Katompa", "pos": "FWD", "rating": 77},
+      {"name": "Cedric Bakambu", "pos": "FWD", "rating": 76}
+    ]},
+    {"name": "Qatar", "rating": 71, "players": [
+      {"name": "Meshaal Barsham", "pos": "GK", "rating": 72},
+      {"name": "Boualem Khoukhi", "pos": "DEF", "rating": 71},
+      {"name": "Hassan Al-Haydos", "pos": "MID", "rating": 73},
+      {"name": "Akram Afif", "pos": "FWD", "rating": 79},
+      {"name": "Almoez Ali", "pos": "FWD", "rating": 76}
+    ]},
+    {"name": "Saudi Arabia", "rating": 71, "players": [
+      {"name": "Mohammed Al-Owais", "pos": "GK", "rating": 73},
+      {"name": "Ali Al-Bulaihi", "pos": "DEF", "rating": 72},
+      {"name": "Salman Al-Faraj", "pos": "MID", "rating": 73},
+      {"name": "Salem Al-Dawsari", "pos": "FWD", "rating": 78},
+      {"name": "Firas Al-Buraikan", "pos": "FWD", "rating": 75}
+    ]},
+    {"name": "South Africa", "rating": 70, "players": [
+      {"name": "Ronwen Williams", "pos": "GK", "rating": 78},
+      {"name": "Siyanda Xulu", "pos": "DEF", "rating": 70},
+      {"name": "Teboho Mokoena", "pos": "MID", "rating": 74},
+      {"name": "Percy Tau", "pos": "FWD", "rating": 75},
+      {"name": "Lyle Foster", "pos": "FWD", "rating": 75}
+    ]},
+    {"name": "Iraq", "rating": 70, "players": [
+      {"name": "Jalal Hassan", "pos": "GK", "rating": 70},
+      {"name": "Rebin Sulaka", "pos": "DEF", "rating": 70},
+      {"name": "Amir Al-Ammari", "pos": "MID", "rating": 73},
+      {"name": "Aymen Hussein", "pos": "FWD", "rating": 73},
+      {"name": "Ali Al-Hamadi", "pos": "FWD", "rating": 74}
+    ]},
+    {"name": "Uzbekistan", "rating": 70, "players": [
+      {"name": "Utkir Yusupov", "pos": "GK", "rating": 70},
+      {"name": "Abdukodir Khusanov", "pos": "DEF", "rating": 79},
+      {"name": "Jaloliddin Masharipov", "pos": "MID", "rating": 73},
+      {"name": "Abbosbek Fayzullaev", "pos": "MID", "rating": 76},
+      {"name": "Eldor Shomurodov", "pos": "FWD", "rating": 77}
+    ]},
+    {"name": "Panama", "rating": 70, "players": [
+      {"name": "Orlando Mosquera", "pos": "GK", "rating": 72},
+      {"name": "Andres Andrade", "pos": "MID", "rating": 72},
+      {"name": "Adalberto Carrasquilla", "pos": "MID", "rating": 73},
+      {"name": "Ismael Diaz", "pos": "FWD", "rating": 72},
+      {"name": "Jose Fajardo", "pos": "FWD", "rating": 71}
+    ]},
+    {"name": "Jordan", "rating": 69, "players": [
+      {"name": "Yazeed Abulaila", "pos": "GK", "rating": 70},
+      {"name": "Yazan Al-Arab", "pos": "DEF", "rating": 70},
+      {"name": "Noor Al-Rawabdeh", "pos": "MID", "rating": 71},
+      {"name": "Mousa Al-Tamari", "pos": "FWD", "rating": 78},
+      {"name": "Yazan Al-Naimat", "pos": "FWD", "rating": 73}
+    ]},
+    {"name": "Cape Verde", "rating": 68, "players": [
+      {"name": "Vozinha", "pos": "GK", "rating": 70},
+      {"name": "Roberto Lopes", "pos": "DEF", "rating": 72},
+      {"name": "Kenny Rocha", "pos": "MID", "rating": 71},
+      {"name": "Garry Rodrigues", "pos": "FWD", "rating": 74},
+      {"name": "Ryan Mendes", "pos": "FWD", "rating": 73}
+    ]},
+    {"name": "New Zealand", "rating": 66, "players": [
+      {"name": "Max Crocombe", "pos": "GK", "rating": 68},
+      {"name": "Michael Boxall", "pos": "DEF", "rating": 68},
+      {"name": "Marko Stamenic", "pos": "MID", "rating": 70},
+      {"name": "Chris Wood", "pos": "FWD", "rating": 78},
+      {"name": "Ben Waine", "pos": "FWD", "rating": 68}
+    ]},
+    {"name": "Curacao", "rating": 65, "players": [
+      {"name": "Eloy Room", "pos": "GK", "rating": 70},
+      {"name": "Cuco Martina", "pos": "DEF", "rating": 66},
+      {"name": "Leandro Bacuna", "pos": "MID", "rating": 72},
+      {"name": "Juninho Bacuna", "pos": "MID", "rating": 71},
+      {"name": "Tahith Chong", "pos": "FWD", "rating": 74}
+    ]},
+    {"name": "Haiti", "rating": 64, "players": [
+      {"name": "Johny Placide", "pos": "GK", "rating": 66},
+      {"name": "Ricardo Ade", "pos": "DEF", "rating": 64},
+      {"name": "Danley Jean Jacques", "pos": "MID", "rating": 68},
+      {"name": "Frantzdy Pierrot", "pos": "FWD", "rating": 70},
+      {"name": "Duckens Nazon", "pos": "FWD", "rating": 67}
+    ]}
+  ]
+}

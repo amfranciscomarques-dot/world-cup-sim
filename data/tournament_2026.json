@@ -1,0 +1,29 @@
+{
+  "name": "2026 FIFA World Cup",
+  "hosts": ["Canada", "Mexico", "United States"],
+  "host_team_names": ["Canada", "Mexico", "USA"],
+  "format": {
+    "num_groups": 12,
+    "teams_per_group": 4,
+    "advance_top_n_per_group": 2,
+    "best_third_placed_advance": 8,
+    "knockout_rounds": ["R32", "R16", "QF", "SF", "F"],
+    "extra_time_minutes": 30,
+    "penalties": true
+  },
+  "groups": {
+    "A": ["Mexico", "South Korea", "South Africa", "Czechia"],
+    "B": ["Canada", "Switzerland", "Qatar", "Bosnia-Herzegovina"],
+    "C": ["Brazil", "Morocco", "Scotland", "Haiti"],
+    "D": ["USA", "Paraguay", "Australia", "Turkiye"],
+    "E": ["Germany", "Ecuador", "Ivory Coast", "Curacao"],
+    "F": ["Netherlands", "Japan", "Tunisia", "Sweden"],
+    "G": ["Belgium", "Iran", "Egypt", "New Zealand"],
+    "H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"],
+    "I": ["France", "Senegal", "Norway", "Iraq"],
+    "J": ["Argentina", "Austria", "Algeria", "Jordan"],
+    "K": ["Portugal", "Colombia", "Uzbekistan", "DR Congo"],
+    "L": ["England", "Croatia", "Panama", "Ghana"]
+  },
+  "_source": "Final draw held 5 December 2025 (Washington, D.C.). Verified against ESPN/NBC Sports group listings, June 2026."
+}
