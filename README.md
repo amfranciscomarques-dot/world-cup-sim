@@ -26,7 +26,17 @@ worldcup match "Brazil" "Spain" -n 5000          # Monte Carlo one fixture: W/D/
 worldcup tournament --seed 7                      # one full tournament, printed
 worldcup odds -n 5000 --top 16                    # Monte Carlo title/stage odds
 worldcup bets --event world-cup-winner -n 2000   # compare to Polymarket + simulate bets
+worldcup games                                    # per-fixture model vs market odds
+worldcup dashboard                                # model-vs-market scoreboard (terminal)
+worldcup html                                     # self-contained HTML dashboard (opens a browser)
+worldcup tui                                      # interactive arrow-key terminal UI
+worldcup web                                      # interactive browser UI (same features as the TUI)
 ```
+
+Simulations are **results-aware**: already-played fixtures are loaded from
+`data/results_2026.json` and taken as fact, so standings are real and only the
+remaining games are simulated. Pass `--fresh` to ignore them and simulate the
+whole tournament from scratch.
 
 Field a custom lineup for a single match:
 
@@ -158,6 +168,29 @@ All three are ordinary factors — tune the constants in `factors/builtin.py`
 `age_xfactor` curve) or switch any off with `registry.set_enabled(name, False)`.
 Ages and coaches are curated estimates in the same spirit as the player ratings.
 
+### In-tournament form: the SofaScore factor
+
+Once games are being played, raw squad rating isn't the whole story — a team can
+be over- or under-performing its talent. The **sofascore** factor folds that in.
+For every match a side has *already played*, it takes that side's average
+SofaScore player rating (~6.0 anonymous → ~10.0 perfect), averages those across
+its games so far, and shifts attack **and** defense by the gap from a ~6.7
+baseline (≈5 rating points per 1.0 of rating, capped at ±4). A squad consistently
+rated above the baseline is rewarded in its **future** fixtures; one below is
+dragged down. It only ever touches games yet to be played — the model-vs-market
+backtest grids that grade past games never see it, so there's no look-ahead.
+
+The ratings live in an offline snapshot, `data/sofascore_2026.json`, so the
+simulation reads them with no network round-trips. Refresh it alongside the
+played results (the live SofaScore fetch is best-effort and won't clobber a good
+snapshot on failure):
+
+```bash
+python scripts/update_sofascore.py            # refresh data/sofascore_2026.json
+worldcup odds -n 2000                          # title odds now feel in-tournament form
+worldcup odds -n 2000 --no-sofa                # …or ignore it
+```
+
 ## Polymarket: compare odds and simulate value bets
 
 The `bets` command pulls a live World Cup market from **Polymarket's public Gamma
@@ -201,6 +234,63 @@ for c in report.comparisons[:5]:
 
 The same flow is available in the TUI under **"Polymarket: compare & bet"**.
 
+## Interactive web UI
+
+`worldcup web` starts a tiny local server and opens an interactive **browser UI
+with the same features as the TUI** — every screen, live: edit a team's starting
+XI (saved XIs feed every simulation), simulate a match, run match/title odds,
+play a full tournament, compare against Polymarket per-game and futures markets,
+and the model-vs-market dashboard. It also has an **"Update data (live)"** screen
+that pulls the latest played scores (and, optionally, the market-odds snapshot)
+straight from Polymarket into the offline data files — the same refresh the
+`scripts/update_*.py` commands do, without leaving the browser. Pure standard
+library — no build step, no third-party dependencies; the page just calls JSON
+endpoints that wrap the same engine the CLI uses.
+
+```bash
+worldcup web                 # opens http://127.0.0.1:8000/
+worldcup web --port 9000     # pick a port
+worldcup web --no-open       # start the server without launching a browser
+```
+
+On Windows, double-click **Open Web UI.bat** to start the server and open the
+browser; leave that window open and close it (or Ctrl-C) to stop the server.
+
+## Live dashboard (HTML)
+
+`worldcup html` writes a single, **self-contained HTML page** — a polished,
+at-a-glance alternative to the terminal TUI — and opens it in your browser. One
+file, no build step, no server: it bundles the title race, real group standings,
+recent results, upcoming fixtures, a model-vs-market backtest, and value bets.
+(It's also reachable from the web UI's dashboard tab, or directly at
+`/dashboard.html` while `worldcup web` is running.)
+
+```bash
+worldcup html                                  # -> dashboard.html, opens a browser
+worldcup html -n 5000 --game-iterations 2000   # sharper (more Monte Carlo runs)
+worldcup html --live                           # refetch odds from Polymarket first
+worldcup html --no-open -o build/wc26.html     # just write the file
+```
+
+The page joins three sources: **our model** (a results-aware Monte Carlo plus a
+per-fixture simulation), the **results** so far, and the **market** (Polymarket).
+To keep rendering fast and offline it reads snapshots in `data/`, refreshed by
+no-key scripts:
+
+```bash
+python scripts/update_results.py   # data/results_2026.json   — played scores
+python scripts/update_odds.py      # data/odds_2026.json      — winner/reach/group + per-game odds
+python scripts/update_sofascore.py # data/sofascore_2026.json — per-game player ratings (form)
+```
+
+(The web UI's **Update data (live)** screen runs the same refreshes from the
+browser — handy mid-tournament without dropping to a shell.)
+
+On Windows the bundled launchers do the same: **Refresh Data.bat** pulls all three
+snapshots, then **Open Dashboard.bat** builds and opens the page. With no odds
+snapshot the dashboard still renders model-only (standings, title odds, fixtures)
+— it just drops the market columns.
+
 ## Adding a new variable (factor)
 
 A factor is a small class that nudges the shared `MatchContext`. Register it and
@@ -223,7 +313,8 @@ class WeatherFactor(Factor):
 a `FactorRegistry` by hand and pass it to `MatchSimulator` / `TournamentSimulator`.
 Toggle any factor with `registry.set_enabled("weather", False)`.
 
-The built-in factors are `lineup`, `home_advantage`, `fatigue`, and `form` — see
+The built-in factors are `lineup`, `home_advantage`, `fatigue`, `chemistry`,
+`condition`, `coaching`, `intangibles`, `form`, and `sofascore` — see
 `src/worldcup/factors/builtin.py` for worked examples.
 
 ## Data

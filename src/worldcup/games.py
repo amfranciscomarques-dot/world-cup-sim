@@ -59,25 +59,47 @@ class GameComparison:
         return OUTCOMES[i], e[i]
 
 
+def model_triple(
+    sim: MatchSimulator,
+    teams: dict[str, Team],
+    home_name: str,
+    away_name: str,
+    iterations: int,
+    host_names: set[str],
+    extras: Optional[dict[str, dict]] = None,
+) -> tuple[float, float, float]:
+    """Monte Carlo (home, draw, away) win probabilities for a fixture, applying
+    host advantage exactly like the group stage (a host plays at home; otherwise
+    the venue is neutral). Works from plain team names, so callers without a
+    :class:`GameMarket` (e.g. the offline dashboard) can reuse it.
+
+    ``extras`` maps a team name to its per-match ``extras`` dict (e.g. SofaScore
+    form); it is threaded to whichever side that team takes, so the same signal
+    applies whether the team is nominally home or away."""
+    home, away = teams[home_name], teams[away_name]
+    he = extras.get(home_name) if extras else None
+    ae = extras.get(away_name) if extras else None
+    home_host = home_name in host_names and away_name not in host_names
+    away_host = away_name in host_names and home_name not in host_names
+    if away_host:
+        # Give the host the home slot, then map probabilities back to game order.
+        odds = sim.monte_carlo(away, home, iterations, stage="group", neutral=False,
+                               home_extras=ae, away_extras=he)
+        return (odds.away_win, odds.draw, odds.home_win)
+    odds = sim.monte_carlo(home, away, iterations, stage="group", neutral=not home_host,
+                           home_extras=he, away_extras=ae)
+    return (odds.home_win, odds.draw, odds.away_win)
+
+
 def _model_probs(
     sim: MatchSimulator,
     teams: dict[str, Team],
     game: GameMarket,
     iterations: int,
     host_names: set[str],
+    extras: Optional[dict[str, dict]] = None,
 ) -> tuple[float, float, float]:
-    """Monte Carlo (home, draw, away) win probabilities for a fixture, applying
-    host advantage exactly like the group stage (a host plays at home; otherwise
-    the venue is neutral)."""
-    home, away = teams[game.home], teams[game.away]   # type: ignore[index]
-    home_host = game.home in host_names and game.away not in host_names
-    away_host = game.away in host_names and game.home not in host_names
-    if away_host:
-        # Give the host the home slot, then map probabilities back to game order.
-        odds = sim.monte_carlo(away, home, iterations, stage="group", neutral=False)
-        return (odds.away_win, odds.draw, odds.home_win)
-    odds = sim.monte_carlo(home, away, iterations, stage="group", neutral=not home_host)
-    return (odds.home_win, odds.draw, odds.away_win)
+    return model_triple(sim, teams, game.home, game.away, iterations, host_names, extras)  # type: ignore[arg-type]
 
 
 def _market_probs(game: GameMarket, market: str) -> Optional[tuple[float, float, float]]:
@@ -105,11 +127,16 @@ def compare_game(
     *,
     host_names: set[str],
     market: str = "auto",
+    extras: Optional[dict[str, dict]] = None,
 ) -> GameComparison:
-    """Compare the model and the market for one fixture (must be team-mapped)."""
+    """Compare the model and the market for one fixture (must be team-mapped).
+
+    Pass ``extras`` (per-team SofaScore form) only for *upcoming* fixtures — a
+    played game is graded against its pre-kickoff market, so applying form
+    aggregated over later games would leak the future into the backtest."""
     return GameComparison(
         game=game,
-        model=_model_probs(sim, teams, game, iterations, host_names),
+        model=_model_probs(sim, teams, game, iterations, host_names, extras),
         market=_market_probs(game, market),
         iterations=iterations,
     )
@@ -123,13 +150,15 @@ def compare_games(
     *,
     host_names: set[str],
     market: str = "auto",
+    extras: Optional[dict[str, dict]] = None,
     on_progress: Optional[Callable[[int, int], None]] = None,
 ) -> list[GameComparison]:
     """Compare every team-mapped fixture in ``games``."""
     mapped = [g for g in games if g.mapped]
     out: list[GameComparison] = []
     for i, game in enumerate(mapped, 1):
-        out.append(compare_game(sim, teams, game, iterations, host_names=host_names, market=market))
+        out.append(compare_game(sim, teams, game, iterations, host_names=host_names,
+                                market=market, extras=extras))
         if on_progress:
             on_progress(i, len(mapped))
     return out

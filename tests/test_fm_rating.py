@@ -9,7 +9,6 @@ from worldcup.fm_rating import (
     POSITION_WEIGHTS,
     attribute_names,
     generate_attributes,
-    group_means,
     rating_from_attributes,
 )
 

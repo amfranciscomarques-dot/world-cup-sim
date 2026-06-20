@@ -107,7 +107,13 @@ class PlayedResult:
 
     The simulator uses these to seed actual group standings and skip simulating
     games that have happened (only the remaining fixtures are drawn). ``home`` /
-    ``away`` are our canonical Team names; goals are the final 90'+ score.
+    ``away`` are our canonical Team names; goals are the final 90'+ (incl. extra
+    time) score.
+
+    For a knockout tie that finished level and went to a shootout, set
+    ``home_pens`` / ``away_pens`` to record who advanced — otherwise the winner
+    can't be recovered from a level score and the simulator falls back to
+    simulating that tie. Group games never need them.
     """
 
     home: str
@@ -116,11 +122,25 @@ class PlayedResult:
     away_goals: int
     stage: str = "group"
     date: str = ""
+    home_pens: int = 0
+    away_pens: int = 0
 
     @property
     def pair(self) -> frozenset:
         """Order-independent key for matching against a fixture pairing."""
         return frozenset((self.home, self.away))
+
+    @property
+    def winner(self) -> Optional[str]:
+        """Team that advanced: by score, then by recorded penalties. ``None`` if
+        the score is level and no shootout winner was recorded (so unknown)."""
+        if self.home_goals > self.away_goals:
+            return self.home
+        if self.away_goals > self.home_goals:
+            return self.away
+        if self.home_pens != self.away_pens:
+            return self.home if self.home_pens > self.away_pens else self.away
+        return None
 
 
 @dataclass

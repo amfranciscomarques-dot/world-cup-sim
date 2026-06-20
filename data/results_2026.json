@@ -1,6 +1,6 @@
 {
   "_about": "Played 2026 World Cup results, fetched from Polymarket per-game markets. Read by the tournament simulator to seed real group standings and only simulate the remaining fixtures. Regenerate with scripts/update_results.py.",
-  "_fetched": "2026-06-17",
+  "_fetched": "2026-06-20",
   "results": [
     {
       "date": "2026-06-11",
@@ -173,10 +173,66 @@
     {
       "date": "2026-06-17",
       "stage": "group",
+      "home": "Ghana",
+      "away": "Panama",
+      "home_goals": 1,
+      "away_goals": 0
+    },
+    {
+      "date": "2026-06-17",
+      "stage": "group",
       "home": "Portugal",
       "away": "DR Congo",
       "home_goals": 1,
       "away_goals": 1
+    },
+    {
+      "date": "2026-06-18",
+      "stage": "group",
+      "home": "Canada",
+      "away": "Qatar",
+      "home_goals": 6,
+      "away_goals": 0
+    },
+    {
+      "date": "2026-06-18",
+      "stage": "group",
+      "home": "Czechia",
+      "away": "South Africa",
+      "home_goals": 1,
+      "away_goals": 1
+    },
+    {
+      "date": "2026-06-18",
+      "stage": "group",
+      "home": "Switzerland",
+      "away": "Bosnia-Herzegovina",
+      "home_goals": 4,
+      "away_goals": 1
+    },
+    {
+      "date": "2026-06-18",
+      "stage": "group",
+      "home": "Uzbekistan",
+      "away": "Colombia",
+      "home_goals": 1,
+      "away_goals": 3
+    },
+    {
+      "date": "2026-06-19",
+      "stage": "group",
+      "home": "Mexico",
+      "away": "South Korea",
+      "home_goals": 1,
+      "away_goals": 0
+    },
+    {
+      "date": "2026-06-19",
+      "stage": "group",
+      "home": "USA",
+      "away": "Australia",
+      "home_goals": 2,
+      "away_goals": 0
     }
   ]
 }

@@ -77,9 +77,13 @@ class TournamentSimulator:
         self.rng = rng or random.Random()
         self.match_sim = MatchSimulator(registry=registry, rng=self.rng)
         self.host_team_names = set(tournament.host_team_names)
-        # Played group fixtures, keyed by team pair for O(1) lookup in play_group.
+        # Played fixtures keyed by team pair for O(1) lookup, split by stage:
+        # group games seed play_group, knockout games seed play_knockout.
         self.known_group = {
             r.pair: r for r in (results or []) if r.stage == "group"
+        }
+        self.known_knockout = {
+            r.pair: r for r in (results or []) if r.stage == "knockout"
         }
 
     def run_once(
@@ -115,7 +119,7 @@ class TournamentSimulator:
 
         knockout = play_knockout(
             bracket, self.match_sim, self.rng, lineups=lineups, extras=extras,
-            prearranged=True,
+            prearranged=True, known=self.known_knockout,
         )
         return TournamentOutcome(groups=groups, qualifiers=qualifiers, knockout=knockout)
 

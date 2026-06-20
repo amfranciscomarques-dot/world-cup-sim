@@ -85,9 +85,87 @@ def load_results(path: Path | str = DEFAULT_RESULTS) -> list[PlayedResult]:
             home=r["home"], away=r["away"],
             home_goals=int(r["home_goals"]), away_goals=int(r["away_goals"]),
             stage=r.get("stage", "group"), date=r.get("date", ""),
+            home_pens=int(r.get("home_pens", 0) or 0),
+            away_pens=int(r.get("away_pens", 0) or 0),
         )
         for r in raw.get("results", [])
     ]
+
+
+def refresh_results(
+    teams: Optional[dict] = None,
+    tournament: "Optional[TournamentDef]" = None,
+    *,
+    path: Path | str = DEFAULT_RESULTS,
+    log=None,
+) -> dict:
+    """Fetch played fixtures from Polymarket and (re)write the results snapshot.
+
+    This is the importable core of ``scripts/update_results.py`` — also called by
+    the web UI's "Update data" action — so the offline ``results_2026.json`` can
+    be refreshed from the live feed without shelling out. Requires network
+    (read-only, no key). Returns a summary dict; raises
+    :class:`worldcup.polymarket.PolymarketError` on a fetch failure.
+    """
+    from datetime import date
+
+    from . import polymarket  # lazy: network code only needed when refreshing
+
+    def say(msg: str) -> None:
+        if log:
+            log(msg)
+
+    if teams is None or tournament is None:
+        teams, tournament = load_world_cup()
+    group_of = {name: letter for letter, names in tournament.groups.items() for name in names}
+
+    say("fetching played World Cup fixtures from Polymarket...")
+    games = polymarket.fetch_games(teams, closed=True)
+
+    rows: list[dict] = []
+    skipped: list[str] = []
+    for g in games:
+        # Need both sides mapped to our squads and a clean "H-A" score.
+        score = g.score or ""
+        parts = score.split("-")
+        if not g.mapped or g.home is None or g.away is None or len(parts) != 2:
+            skipped.append(g.title or g.slug)
+            continue
+        try:
+            h, a = int(parts[0]), int(parts[1])
+        except ValueError:
+            skipped.append(g.title or g.slug)
+            continue
+        home, away = g.home, g.away
+        same_group = group_of.get(home) is not None and group_of.get(home) == group_of.get(away)
+        rows.append({
+            "date": g.date,
+            "stage": "group" if same_group else "knockout",
+            "home": home,
+            "away": away,
+            "home_goals": h,
+            "away_goals": a,
+        })
+
+    rows.sort(key=lambda r: (r["date"], r["home"]))
+    fetched = date.today().isoformat()
+    payload = {
+        "_about": (
+            "Played 2026 World Cup results, fetched from Polymarket per-game markets. "
+            "Read by the tournament simulator to seed real group standings and only "
+            "simulate the remaining fixtures. Regenerate with scripts/update_results.py."
+        ),
+        "_fetched": fetched,
+        "results": rows,
+    }
+    out = Path(path)
+    out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    groups = sum(1 for r in rows if r["stage"] == "group")
+    say(f"wrote {len(rows)} played results ({groups} group, {len(rows) - groups} knockout) to {out.name}")
+    return {
+        "path": str(out), "fetched": fetched, "total": len(rows),
+        "group": groups, "knockout": len(rows) - groups, "skipped": skipped,
+    }
 
 
 def load_world_cup(

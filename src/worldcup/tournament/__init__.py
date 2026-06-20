@@ -1,6 +1,12 @@
 """Tournament layer: group stage, knockout bracket, and Monte Carlo simulator."""
 
-from .group_stage import GroupResult, GroupStanding, play_group, rank_third_placed
+from .group_stage import (
+    GroupResult,
+    GroupStanding,
+    play_group,
+    rank_third_placed,
+    standings_from_results,
+)
 from .knockout import (
     KnockoutResult,
     build_official_bracket_2026,
@@ -14,6 +20,7 @@ __all__ = [
     "GroupStanding",
     "play_group",
     "rank_third_placed",
+    "standings_from_results",
     "KnockoutResult",
     "play_knockout",
     "build_official_bracket_2026",

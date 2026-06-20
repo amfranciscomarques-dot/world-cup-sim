@@ -159,6 +159,32 @@ def play_group(
     return GroupResult(letter=letter, standings=standings, results=results)
 
 
+def standings_from_results(
+    letter: str,
+    team_names: list[str],
+    results: list[PlayedResult],
+    rng: random.Random,
+) -> GroupResult:
+    """Build a group's *current* table from already-played results only.
+
+    Unlike :func:`play_group`, nothing is simulated: only fixtures between two
+    teams in ``team_names`` that appear in ``results`` are counted, so the table
+    reflects exactly the games played so far (teams may have ``played < 3``)."""
+    nameset = set(team_names)
+    table = {n: GroupStanding(team=n) for n in team_names}
+    played: list[MatchResult] = []
+    for r in results:
+        if r.home in nameset and r.away in nameset:
+            table[r.home].record(r.home_goals, r.away_goals)
+            table[r.away].record(r.away_goals, r.home_goals)
+            played.append(MatchResult(
+                home=r.home, away=r.away,
+                home_goals=r.home_goals, away_goals=r.away_goals, stage="group",
+            ))
+    standings = rank_standings(list(table.values()), played, rng)
+    return GroupResult(letter=letter, standings=standings, results=played)
+
+
 def rank_third_placed(groups: list[GroupResult], rng: random.Random, take: int) -> list[GroupStanding]:
     """Rank every group's third-placed team and return the best ``take`` of them."""
     thirds = [g.third for g in groups]

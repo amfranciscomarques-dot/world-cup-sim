@@ -9,7 +9,9 @@
     worldcup bets --event world-cup-winner    compare our odds to Polymarket + simulate value bets
     worldcup games                       compare our match odds to Polymarket per-game markets
     worldcup dashboard                   model-vs-market scoreboard over all finished games
+    worldcup html                        write a self-contained HTML dashboard and open it
     worldcup tui                         interactive, arrow-key terminal UI
+    worldcup web                         interactive browser UI (same features as the TUI)
 
 Everything the CLI does is also available as a Python API; lineup and per-team
 "extras" overrides are richer there (see the README).
@@ -150,6 +152,12 @@ def cmd_match(args: argparse.Namespace) -> None:
     home_lineup = _build_lineup(home, args.home_xi) or lineup_for(home)
     away_lineup = _build_lineup(away, args.away_xi) or lineup_for(away)
 
+    # In-tournament SofaScore form for each side (no-op without a snapshot or
+    # with --no-sofa), applied to this hypothetical fixture like any future game.
+    sofa = _sofa_extras(args)
+    home_extras = sofa.get(home.name)
+    away_extras = sofa.get(away.name)
+
     if args.iterations > 1:
         odds = sim.monte_carlo(
             home, away, args.iterations,
@@ -157,6 +165,8 @@ def cmd_match(args: argparse.Namespace) -> None:
             neutral=not args.home_advantage,
             home_lineup=home_lineup,
             away_lineup=away_lineup,
+            home_extras=home_extras,
+            away_extras=away_extras,
         )
         knockout = args.stage in KNOCKOUT_STAGES
         verb = "advances" if knockout else "win"
@@ -184,6 +194,8 @@ def cmd_match(args: argparse.Namespace) -> None:
             neutral=not args.home_advantage,
             home_lineup=home_lineup,
             away_lineup=away_lineup,
+            home_extras=home_extras,
+            away_extras=away_extras,
             meta=meta,
         )
     else:
@@ -193,6 +205,8 @@ def cmd_match(args: argparse.Namespace) -> None:
             neutral=not args.home_advantage,
             home_lineup=home_lineup,
             away_lineup=away_lineup,
+            home_extras=home_extras,
+            away_extras=away_extras,
             meta=meta,
         )
     print(result.score_str())
@@ -217,16 +231,32 @@ def _played_results(args: argparse.Namespace) -> list:
     return load_results()
 
 
+def _sofa_extras(args: argparse.Namespace) -> dict:
+    """Per-team SofaScore form to feed future games.
+
+    Suppressed by ``--no-sofa`` and by ``--fresh`` (simulating from scratch means
+    ignoring the tournament so far, form included). ``{}`` when there is no
+    snapshot, which makes the SofaScore factor a no-op."""
+    from .sofascore_store import load_form_extras
+
+    if getattr(args, "fresh", False) or getattr(args, "no_sofa", False):
+        return {}
+    return load_form_extras()
+
+
 def cmd_tournament(args: argparse.Namespace) -> None:
     teams, tournament = load_world_cup()
     results = _played_results(args)
     rng = random.Random(args.seed)
     sim = TournamentSimulator(teams, tournament, rng=rng, results=results)
-    outcome = sim.run_once()
+    sofa = _sofa_extras(args)
+    outcome = sim.run_once(extras=sofa)
 
     if results:
         print(f"(seeded with {len(results)} games already played; "
-              f"only remaining fixtures are simulated)\n")
+              f"only remaining fixtures are simulated"
+              + (f"; SofaScore form applied to {len(sofa)} teams" if sofa else "")
+              + ")\n")
 
     print("=== GROUP STAGE ===")
     for g in outcome.groups:
@@ -250,12 +280,18 @@ def cmd_tui(args: argparse.Namespace) -> None:
     run()
 
 
+def cmd_web(args: argparse.Namespace) -> None:
+    from .webapp import serve
+
+    serve(host=args.host, port=args.port, open_browser=not args.no_open)
+
+
 def cmd_odds(args: argparse.Namespace) -> None:
     teams, tournament = load_world_cup()
     results = _played_results(args)
     rng = random.Random(args.seed)
     sim = TournamentSimulator(teams, tournament, rng=rng, results=results)
-    report = sim.monte_carlo(args.iterations)
+    report = sim.monte_carlo(args.iterations, extras=_sofa_extras(args))
 
     seeded = (f"  ({len(results)} games already played, only remaining fixtures simulated)"
               if results else "")
@@ -379,7 +415,8 @@ def cmd_games(args: argparse.Namespace) -> None:
 
     if show_upcoming:
         upcoming = [g for g in mapped if not g.closed][: args.top]
-        comps = compare_games(sim, teams, upcoming, args.iterations, host_names=hosts)
+        comps = compare_games(sim, teams, upcoming, args.iterations, host_names=hosts,
+                              extras=_sofa_extras(args))
         print(f"\nUPCOMING -- live market vs model over {args.iterations} sims\n")
         print(header)
         for c in comps:
@@ -394,7 +431,7 @@ def cmd_games(args: argparse.Namespace) -> None:
             played = played[-args.top:]
         print("fetching pre-kickoff market odds for played games...", file=sys.stderr)
         comps = compare_games(sim, teams, played, args.iterations, host_names=hosts)
-        print(f"\nPLAYED -- pre-kickoff market vs model vs actual result\n")
+        print("\nPLAYED -- pre-kickoff market vs model vs actual result\n")
         print(header)
         for c in comps:
             res = c.game.result
@@ -492,6 +529,89 @@ def cmd_dashboard(args: argparse.Namespace) -> None:
         print("  (* = model and market backed different favourites)")
 
 
+def cmd_html(args: argparse.Namespace) -> None:
+    import webbrowser
+    from pathlib import Path
+
+    from . import polymarket
+    from .html import render_dashboard
+    from .odds_store import load_odds
+    from .report import build_report
+
+    teams, tournament = load_world_cup()
+    results = _played_results(args)
+
+    # Market data: the offline snapshot by default; --live refetches Polymarket.
+    odds = None
+    if args.live:
+        print("fetching live odds from Polymarket...", file=sys.stderr)
+        try:
+            odds = _live_snapshot(teams, tournament)
+        except polymarket.PolymarketError as exc:
+            print(f"warning: live fetch failed ({exc}); falling back to snapshot", file=sys.stderr)
+    if odds is None:
+        odds = load_odds()
+    if odds is None and not args.live:
+        print("note: no odds snapshot found — run `python scripts/update_odds.py` "
+              "for market columns (rendering model-only).", file=sys.stderr)
+
+    def progress(stage: str, done: int, total: int) -> None:
+        pct = f"{done}/{total}" if total else ""
+        print(f"\r  {stage:<16} {pct:>10}   ", end="", file=sys.stderr, flush=True)
+
+    report = build_report(
+        teams, tournament, results, odds,
+        title_iters=args.iterations, game_iters=args.game_iterations,
+        max_upcoming=args.upcoming, top_title=args.top, seed=args.seed,
+        sofa_extras=_sofa_extras(args),
+        progress=progress,
+    )
+    print("", file=sys.stderr)
+
+    out = Path(args.output)
+    out.write_text(render_dashboard(report), encoding="utf-8")
+    print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
+    if not args.no_open:
+        webbrowser.open(out.resolve().as_uri())
+
+
+def _live_snapshot(teams, tournament) -> "object":
+    """Build an OddsSnapshot from live Polymarket data (no file write)."""
+    from datetime import date
+
+    from . import polymarket
+    from .odds_store import GameOdds, OddsSnapshot
+
+    def event_map(slug):
+        try:
+            return {ln.team: ln.yes_price for ln in polymarket.fetch_event(slug, teams).matched}
+        except polymarket.PolymarketError:
+            return {}
+
+    games = polymarket.fetch_games(teams)
+    rows = []
+    for g in games:
+        if not g.mapped:
+            continue
+        pre = None
+        if g.closed:
+            try:
+                pre = polymarket.pregame_odds(g)
+            except polymarket.PolymarketError:
+                pre = None
+        rows.append(GameOdds(date=g.date, home=g.home, away=g.away, closed=g.closed,
+                             score=g.score, live=g.live_probs, pregame=pre))
+    return OddsSnapshot(
+        fetched=date.today().isoformat(),
+        winner=event_map("world-cup-winner"),
+        reach={"R16": event_map("world-cup-nation-to-reach-round-of-16"),
+               "QF": event_map("world-cup-nation-to-reach-quarterfinals")},
+        group_winners={letter: event_map(f"world-cup-group-{letter.lower()}-winner")
+                       for letter in tournament.groups},
+        games=rows,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="worldcup", description="2026 FIFA World Cup simulator")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -517,6 +637,8 @@ def build_parser() -> argparse.ArgumentParser:
                    help="kickoff air temperature in C; >=30 triggers hydration/cooling breaks")
     p.add_argument("--no-live", action="store_true",
                    help="use the fast aggregate model (no in-match fatigue/subs/hydration)")
+    p.add_argument("--no-sofa", action="store_true",
+                   help="ignore in-tournament SofaScore form when rating the teams")
     p.add_argument("--seed", type=int, default=None, help="RNG seed for reproducibility")
     p.set_defaults(func=cmd_match)
 
@@ -524,10 +646,18 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--fresh", action="store_true",
                    help="ignore already-played results and simulate from scratch")
+    p.add_argument("--no-sofa", action="store_true",
+                   help="ignore in-tournament SofaScore form when rating the teams")
     p.set_defaults(func=cmd_tournament)
 
     p = sub.add_parser("tui", help="interactive terminal UI (arrow keys)")
     p.set_defaults(func=cmd_tui)
+
+    p = sub.add_parser("web", help="interactive web UI in the browser (same features as the TUI)")
+    p.add_argument("--port", type=int, default=8000, help="port to serve on (default 8000)")
+    p.add_argument("--host", default="127.0.0.1", help="bind address (default 127.0.0.1)")
+    p.add_argument("--no-open", action="store_true", help="don't open a browser automatically")
+    p.set_defaults(func=cmd_web)
 
     p = sub.add_parser("odds", help="Monte Carlo stage/title probabilities")
     p.add_argument("-n", "--iterations", type=int, default=1000)
@@ -535,6 +665,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--fresh", action="store_true",
                    help="ignore already-played results and simulate from scratch")
+    p.add_argument("--no-sofa", action="store_true",
+                   help="ignore in-tournament SofaScore form when rating the teams")
     p.set_defaults(func=cmd_odds)
 
     p = sub.add_parser("bets", help="compare our odds to Polymarket and simulate value bets")
@@ -561,6 +693,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("-n", "--iterations", type=int, default=2000,
                    help="Monte Carlo runs per fixture for our model odds (default 2000)")
     p.add_argument("--top", type=int, default=20, help="max fixtures per section (default 20)")
+    p.add_argument("--no-sofa", action="store_true",
+                   help="ignore in-tournament SofaScore form for upcoming-game model odds")
     p.add_argument("--seed", type=int, default=None)
     p.set_defaults(func=cmd_games)
 
@@ -569,6 +703,24 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Monte Carlo runs per fixture for our model odds (default 2000)")
     p.add_argument("--seed", type=int, default=None)
     p.set_defaults(func=cmd_dashboard)
+
+    p = sub.add_parser("html", help="write a self-contained HTML dashboard (alternative to the TUI)")
+    p.add_argument("-o", "--output", default="dashboard.html", help="output file (default dashboard.html)")
+    p.add_argument("-n", "--iterations", type=int, default=2000,
+                   help="tournament Monte Carlo runs for title/stage odds (default 2000)")
+    p.add_argument("--game-iterations", type=int, default=1500,
+                   help="Monte Carlo runs per fixture for match odds (default 1500)")
+    p.add_argument("--upcoming", type=int, default=12, help="how many upcoming fixtures to show")
+    p.add_argument("--top", type=int, default=16, help="how many teams in the title race table")
+    p.add_argument("--live", action="store_true",
+                   help="fetch fresh odds from Polymarket instead of the offline snapshot")
+    p.add_argument("--no-open", action="store_true", help="write the file but don't open a browser")
+    p.add_argument("--seed", type=int, default=None)
+    p.add_argument("--fresh", action="store_true",
+                   help="ignore already-played results and simulate from scratch")
+    p.add_argument("--no-sofa", action="store_true",
+                   help="ignore in-tournament SofaScore form when rating the teams")
+    p.set_defaults(func=cmd_html)
 
     return parser
 

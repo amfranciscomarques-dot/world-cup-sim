@@ -16,3 +16,7 @@ dist/
 build/
 desktop.ini
 .DS_Store
+
+# Generated HTML dashboard and any local render screenshots
+/dashboard.html
+dash_*.png

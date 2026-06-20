@@ -96,6 +96,69 @@ def test_knockout_produces_champion():
     assert len(result.rounds[0]) == 16
 
 
+def _r16_team_names(result):
+    return {m.home for m in result.rounds[1]} | {m.away for m in result.rounds[1]}
+
+
+def test_knockout_uses_known_decisive_result_instead_of_simulating():
+    teams = [Team(f"T{i}", 70 + i) for i in range(32)]
+    # Pin the first R32 tie (T0 vs T1) to a real 0-2 win for the away side, T1.
+    known = {frozenset(("T0", "T1")): PlayedResult("T0", "T1", 0, 2, stage="knockout")}
+    result = play_knockout(
+        teams, MatchSimulator(rng=random.Random(3)), random.Random(3),
+        prearranged=True, known=known,
+    )
+    pinned = next(m for m in result.rounds[0] if {m.home, m.away} == {"T0", "T1"})
+    assert (pinned.home, pinned.home_goals, pinned.away_goals) == ("T0", 0, 2)
+    assert pinned.winner == "T1"
+    r16 = _r16_team_names(result)
+    assert "T1" in r16 and "T0" not in r16  # the real winner advanced, not the loser
+
+
+def test_knockout_known_penalty_shootout_decides_who_advances():
+    teams = [Team(f"T{i}", 70 + i) for i in range(32)]
+    # A level tie that T0 won on penalties (4-2) — winner unrecoverable from the
+    # score, so the recorded shootout is what advances T0.
+    known = {frozenset(("T0", "T1")): PlayedResult(
+        "T0", "T1", 1, 1, stage="knockout", home_pens=4, away_pens=2)}
+    result = play_knockout(
+        teams, MatchSimulator(rng=random.Random(4)), random.Random(4),
+        prearranged=True, known=known,
+    )
+    pinned = next(m for m in result.rounds[0] if {m.home, m.away} == {"T0", "T1"})
+    assert pinned.penalties and (pinned.home_pens, pinned.away_pens) == (4, 2)
+    assert pinned.winner == "T0"
+    r16 = _r16_team_names(result)
+    assert "T0" in r16 and "T1" not in r16
+
+
+def test_knockout_level_score_without_pens_falls_back_to_simulation():
+    teams = [Team(f"T{i}", 70 + i) for i in range(32)]
+    # Level score, no shootout recorded: the winner is unknowable, so the tie is
+    # simulated rather than silently advancing one side.
+    known = {frozenset(("T0", "T1")): PlayedResult("T0", "T1", 1, 1, stage="knockout")}
+    result = play_knockout(
+        teams, MatchSimulator(rng=random.Random(5)), random.Random(5),
+        prearranged=True, known=known,
+    )
+    pinned = next(m for m in result.rounds[0] if {m.home, m.away} == {"T0", "T1"})
+    assert pinned.winner in ("T0", "T1")            # a real winner is produced
+    r16 = _r16_team_names(result)
+    assert ("T0" in r16) != ("T1" in r16)           # exactly one side advances
+
+
+def test_tournament_simulator_splits_known_results_by_stage():
+    teams, tournament = load_world_cup()
+    results = [
+        PlayedResult("Mexico", "South Korea", 5, 0, stage="group"),
+        PlayedResult("Brazil", "Argentina", 2, 1, stage="knockout"),
+    ]
+    sim = TournamentSimulator(teams, tournament, rng=random.Random(1), results=results)
+    assert frozenset(("Mexico", "South Korea")) in sim.known_group
+    assert frozenset(("Brazil", "Argentina")) in sim.known_knockout
+    assert frozenset(("Brazil", "Argentina")) not in sim.known_group
+
+
 # Candidate third-place groups allowed in each winner-group slot, per the
 # official format (Wikipedia "2026 FIFA World Cup knockout stage").
 _THIRD_CANDIDATES = {

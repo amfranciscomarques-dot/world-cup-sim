@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Optional
 
 from ..engine import MatchSimulator
-from ..models import Lineup, MatchResult, Team
+from ..models import Lineup, MatchResult, PlayedResult, Team
 
 ROUND_NAMES = {32: "R32", 16: "R16", 8: "QF", 4: "SF", 2: "F"}
 
@@ -145,6 +145,32 @@ class KnockoutResult:
         return []
 
 
+def _played_knockout_result(
+    played: PlayedResult, home: Team, away: Team, stage: str
+) -> Optional[MatchResult]:
+    """Turn a real knockout result into a :class:`MatchResult`, or ``None`` if it
+    can't decide who advanced (level score with no shootout recorded) — the
+    caller then simulates that tie instead of inventing a winner.
+
+    The result keeps the snapshot's own home/away orientation; the winner is
+    guaranteed to be one of the two teams contesting this bracket slot.
+    """
+    winner = played.winner
+    if winner is None or winner not in (home.name, away.name):
+        return None
+    result = MatchResult(
+        home=played.home, away=played.away,
+        home_goals=played.home_goals, away_goals=played.away_goals,
+        stage=stage,
+    )
+    if played.home_goals == played.away_goals:  # advanced on penalties
+        result.extra_time = True
+        result.penalties = True
+        result.home_pens = played.home_pens
+        result.away_pens = played.away_pens
+    return result
+
+
 def play_knockout(
     seeded_teams: list[Team],
     simulator: MatchSimulator,
@@ -153,15 +179,24 @@ def play_knockout(
     lineups: Optional[dict[str, Lineup]] = None,
     extras: Optional[dict[str, dict]] = None,
     prearranged: bool = False,
+    known: Optional[dict[frozenset, PlayedResult]] = None,
 ) -> KnockoutResult:
     """Run the bracket on a power-of-two field (32 for the World Cup).
 
     By default ``seeded_teams`` is ordered best-seed-first and dropped into a
     balanced seed bracket. Pass ``prearranged=True`` when the list is already in
     bracket (leaf) order — e.g. from ``build_official_bracket_2026`` — and it is
-    used as-is."""
+    used as-is.
+
+    ``known`` maps a ``frozenset({home, away})`` to a real ``PlayedResult``: a
+    tie between two teams with a known, decisive result is recorded as fact
+    instead of being simulated, so a part-played bracket stays true to reality
+    and only the remaining ties are drawn. A level knockout score with no
+    recorded shootout winner is simulated (the advancing side is unknowable from
+    the score alone)."""
     lineups = lineups or {}
     extras = extras or {}
+    known = known or {}
     n = len(seeded_teams)
     if n & (n - 1) != 0:
         raise ValueError(f"knockout needs a power-of-two field, got {n}")
@@ -181,11 +216,14 @@ def play_knockout(
         winners: list[Team] = []
         for i in range(0, len(current), 2):
             home, away = current[i], current[i + 1]
-            match = simulator.simulate(
-                home, away, stage=stage, neutral=True,
-                home_lineup=lineups.get(home.name), away_lineup=lineups.get(away.name),
-                home_extras=extras.get(home.name), away_extras=extras.get(away.name),
-            )
+            played = known.get(frozenset((home.name, away.name)))
+            match = _played_knockout_result(played, home, away, stage) if played else None
+            if match is None:
+                match = simulator.simulate(
+                    home, away, stage=stage, neutral=True,
+                    home_lineup=lineups.get(home.name), away_lineup=lineups.get(away.name),
+                    home_extras=extras.get(home.name), away_extras=extras.get(away.name),
+                )
             round_results.append(match)
             winners.append(home if match.winner == home.name else away)
         result.rounds.append(round_results)

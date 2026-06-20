@@ -4,7 +4,7 @@ import random
 
 from worldcup.engine import live
 from worldcup.engine.match import MatchSimulator
-from worldcup.models import Lineup, Player, Team
+from worldcup.models import Player, Team
 
 
 def _deep_team(name: str, rating: float, *, stamina: int = 13) -> Team:

@@ -1,0 +1,296 @@
+{
+  "_about": "SofaScore match ratings for played 2026 World Cup fixtures: each side's average player rating (and the per-player ratings behind it). Read offline by SofaScoreFactor as an in-tournament form signal. Regenerate with scripts/update_sofascore.py. (Seed values are curated estimates derived from each result until a live refresh replaces them.)",
+  "_fetched": "2026-06-20",
+  "games": [
+    {
+      "date": "2026-06-11",
+      "home": "Mexico",
+      "away": "South Africa",
+      "home_rating": 7.3,
+      "away_rating": 6.6,
+      "score": "2-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-12",
+      "home": "Canada",
+      "away": "Bosnia-Herzegovina",
+      "home_rating": 6.8,
+      "away_rating": 7.0,
+      "score": "1-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-12",
+      "home": "South Korea",
+      "away": "Czechia",
+      "home_rating": 7.0,
+      "away_rating": 6.8,
+      "score": "2-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-13",
+      "home": "Brazil",
+      "away": "Morocco",
+      "home_rating": 6.6,
+      "away_rating": 6.8,
+      "score": "1-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-13",
+      "home": "Qatar",
+      "away": "Switzerland",
+      "home_rating": 6.7,
+      "away_rating": 6.9,
+      "score": "1-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-13",
+      "home": "USA",
+      "away": "Paraguay",
+      "home_rating": 7.5,
+      "away_rating": 6.3,
+      "score": "4-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-14",
+      "home": "Australia",
+      "away": "Turkiye",
+      "home_rating": 7.3,
+      "away_rating": 6.2,
+      "score": "2-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-14",
+      "home": "Germany",
+      "away": "Curacao",
+      "home_rating": 8.0,
+      "away_rating": 5.8,
+      "score": "7-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-14",
+      "home": "Haiti",
+      "away": "Scotland",
+      "home_rating": 6.6,
+      "away_rating": 7.0,
+      "score": "0-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-14",
+      "home": "Ivory Coast",
+      "away": "Ecuador",
+      "home_rating": 6.7,
+      "away_rating": 6.4,
+      "score": "1-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-14",
+      "home": "Netherlands",
+      "away": "Japan",
+      "home_rating": 6.8,
+      "away_rating": 7.0,
+      "score": "2-2",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-15",
+      "home": "Belgium",
+      "away": "Egypt",
+      "home_rating": 6.5,
+      "away_rating": 6.6,
+      "score": "1-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-15",
+      "home": "Saudi Arabia",
+      "away": "Uruguay",
+      "home_rating": 6.5,
+      "away_rating": 6.8,
+      "score": "1-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-15",
+      "home": "Spain",
+      "away": "Cape Verde",
+      "home_rating": 6.9,
+      "away_rating": 6.8,
+      "score": "0-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-15",
+      "home": "Sweden",
+      "away": "Tunisia",
+      "home_rating": 7.7,
+      "away_rating": 6.0,
+      "score": "5-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-16",
+      "home": "France",
+      "away": "Senegal",
+      "home_rating": 7.2,
+      "away_rating": 6.2,
+      "score": "3-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-16",
+      "home": "Iran",
+      "away": "New Zealand",
+      "home_rating": 7.0,
+      "away_rating": 6.7,
+      "score": "2-2",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-16",
+      "home": "Iraq",
+      "away": "Norway",
+      "home_rating": 6.3,
+      "away_rating": 7.4,
+      "score": "1-4",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-17",
+      "home": "Argentina",
+      "away": "Algeria",
+      "home_rating": 7.5,
+      "away_rating": 6.2,
+      "score": "3-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-17",
+      "home": "Austria",
+      "away": "Jordan",
+      "home_rating": 7.2,
+      "away_rating": 6.4,
+      "score": "3-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-17",
+      "home": "England",
+      "away": "Croatia",
+      "home_rating": 7.1,
+      "away_rating": 6.4,
+      "score": "4-2",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-17",
+      "home": "Ghana",
+      "away": "Panama",
+      "home_rating": 7.1,
+      "away_rating": 6.5,
+      "score": "1-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-17",
+      "home": "Portugal",
+      "away": "DR Congo",
+      "home_rating": 7.0,
+      "away_rating": 7.0,
+      "score": "1-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Canada",
+      "away": "Qatar",
+      "home_rating": 8.0,
+      "away_rating": 5.8,
+      "score": "6-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Czechia",
+      "away": "South Africa",
+      "home_rating": 6.7,
+      "away_rating": 6.5,
+      "score": "1-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Switzerland",
+      "away": "Bosnia-Herzegovina",
+      "home_rating": 7.5,
+      "away_rating": 6.5,
+      "score": "4-1",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-18",
+      "home": "Uzbekistan",
+      "away": "Colombia",
+      "home_rating": 6.3,
+      "away_rating": 7.2,
+      "score": "1-3",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-19",
+      "home": "Mexico",
+      "away": "South Korea",
+      "home_rating": 6.8,
+      "away_rating": 6.4,
+      "score": "1-0",
+      "home_players": [],
+      "away_players": []
+    },
+    {
+      "date": "2026-06-19",
+      "home": "USA",
+      "away": "Australia",
+      "home_rating": 7.2,
+      "away_rating": 6.4,
+      "score": "2-0",
+      "home_players": [],
+      "away_players": []
+    }
+  ]
+}

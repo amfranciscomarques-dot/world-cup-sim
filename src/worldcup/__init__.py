@@ -17,13 +17,17 @@ from __future__ import annotations
 
 from .data_loader import (
     TournamentDef,
+    load_results,
     load_teams,
     load_tournament,
     load_world_cup,
 )
 from .engine import MatchSimulator
 from .factors import Factor, FactorRegistry, MatchContext, default_registry, register
+from .html import render_dashboard
 from .models import Lineup, MatchResult, Player, Team
+from .odds_store import load_odds
+from .report import build_report
 from .tournament import (
     MonteCarloReport,
     TournamentOutcome,
@@ -36,6 +40,10 @@ __all__ = [
     "load_world_cup",
     "load_teams",
     "load_tournament",
+    "load_results",
+    "load_odds",
+    "build_report",
+    "render_dashboard",
     "TournamentDef",
     "MatchSimulator",
     "Factor",

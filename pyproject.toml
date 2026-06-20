@@ -11,7 +11,7 @@ readme = "README.md"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0"]
+dev = ["pytest>=7.0", "ruff>=0.5", "mypy>=1.8"]
 
 [project.scripts]
 worldcup = "worldcup.cli:main"
@@ -24,3 +24,39 @@ worldcup = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# High-signal defaults: pyflakes (F) catches unused imports / names / bad
+# f-strings; pycodestyle (E/W) the structural style errors. Line length is
+# enforced loosely (long embedded HTML and data literals are deliberate).
+select = ["E", "F", "W"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "src"
+ignore_missing_imports = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+# Incremental typing: the simulation core and data/store layer are type-checked
+# (run `mypy -p worldcup`). The presentation/network layer is still loosely
+# typed and exempted below — delete a module from this list and fix what mypy
+# reports to bring it under the gate.
+[[tool.mypy.overrides]]
+module = [
+    "worldcup.cli",
+    "worldcup.html",
+    "worldcup.polymarket",
+    "worldcup.games",
+    "worldcup.betting",
+    "worldcup.report",
+    "worldcup.sofascore",
+    "worldcup.tui",
+    "worldcup.webapp",
+]
+ignore_errors = true

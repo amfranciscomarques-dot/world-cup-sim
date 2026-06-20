@@ -332,3 +332,46 @@ class FormFactor(Factor):
             form = max(-1.0, min(1.0, float(form)))
             state.attack += self.scale * form
             state.defense += self.scale * form
+
+
+# SofaScore's per-match player rating runs ~6.0 (anonymous) to ~10.0 (perfect);
+# a forgettable average performance sits near this baseline, so only deviations
+# from it shift a side's strength.
+SOFA_BASELINE = 6.70
+
+
+@register
+class SofaScoreFactor(Factor):
+    """In-tournament player form from SofaScore match ratings.
+
+    Distinct from :class:`FormFactor` (a hand-set ``[-1, 1]`` morale dial): this
+    reads a side's *measured* average SofaScore rating across the games it has
+    actually played so far (``extras['sofa_rating']``, typically ~6.0–7.6) and
+    converts the gap from :data:`SOFA_BASELINE` into rating points. A squad
+    consistently rated above the baseline is overperforming and gets a lift to
+    both attack and defense; one rated below is dragged down. The delta is
+    clamped to ``±cap``.
+
+    It is opt-in and results-derived: the per-team rating is computed from the
+    offline SofaScore snapshot (``data/sofascore_2026.json`` via
+    ``sofascore_store.form_extras``) and applied to a team's *future* fixtures,
+    so the more games a team plays, the more its real performances feed back into
+    the simulation. Teams with no rating yet (no games played, or absent from the
+    snapshot) are left untouched.
+    """
+
+    name = "sofascore"
+
+    def __init__(self, baseline: float = SOFA_BASELINE, scale: float = 5.0, cap: float = 4.0) -> None:
+        self.baseline = baseline
+        self.scale = scale
+        self.cap = cap
+
+    def adjust(self, ctx: MatchContext) -> None:
+        for state in ctx.states():
+            rating = state.extras.get("sofa_rating")
+            if rating is None:
+                continue
+            delta = max(-self.cap, min(self.cap, (float(rating) - self.baseline) * self.scale))
+            state.attack += delta
+            state.defense += delta

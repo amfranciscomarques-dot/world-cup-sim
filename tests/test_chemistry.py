@@ -6,7 +6,6 @@ import random
 
 from worldcup.data_loader import load_world_cup
 from worldcup.engine import MatchSimulator
-from worldcup.factors import FactorRegistry
 from worldcup.factors.builtin import ChemistryFactor, club_clusters, club_pairs
 from worldcup.models import Lineup, Player, Team
 
@@ -44,8 +43,6 @@ def test_chemistry_helps_a_high_chemistry_side():
     # Two equal-rated teams; only one has a shared-club core. Over many games it
     # should not be worse off — sanity that the factor is wired and positive.
     teams, _ = load_world_cup()
-    reg = FactorRegistry([ChemistryFactor()])
-    sim = MatchSimulator(registry=reg, rng=random.Random(1))
     pt = teams["Portugal"]
     # Portugal's best XI fields a real club core (PSG block + a Man City pair),
     # so it carries a positive chemistry bonus.

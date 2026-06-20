@@ -20,6 +20,7 @@ from .factors.builtin import ChemistryFactor, CoachFactor, club_clusters, team_i
 from .fm_rating import MENTAL, PHYSICAL, group_means, technical_attrs
 from .lineup_store import lineup_for, lineup_map, load_saved, save_saved
 from .models import POSITIONS, Team
+from .sofascore_store import load_form_extras
 from .tournament import TournamentSimulator
 
 # --- ANSI styling ----------------------------------------------------------
@@ -484,12 +485,14 @@ def _screen_match(teams, tournament) -> None:
             return f"   {team.name}: none"
         return f"   {team.name}: " + ", ".join(f"{m}' {off} -> {on}" for m, off, on in subs)
 
+    sofa = load_form_extras()
     seed: Optional[int] = None
     while True:
         rng = random.Random(seed)
         sim = MatchSimulator(rng=rng)
         result = sim.simulate_live(home, away, stage=stage, neutral=not host,
-                                   home_lineup=home_lineup, away_lineup=away_lineup)
+                                   home_lineup=home_lineup, away_lineup=away_lineup,
+                                   home_extras=sofa.get(home.name), away_extras=sofa.get(away.name))
         xi_note = (f"   lineups: {home.name} "
                    f"{'custom XI' if home_lineup else 'best XI'}  ·  "
                    f"{away.name} {'custom XI' if away_lineup else 'best XI'}")
@@ -526,7 +529,7 @@ def _screen_match(teams, tournament) -> None:
         ]
         if result.winner:
             body += ["", f"   winner: {result.winner}"]
-        key = _notice(f"MATCH RESULT", f"{home.name} vs {away.name}", body)
+        key = _notice("MATCH RESULT", f"{home.name} vs {away.name}", body)
         if key in ("r", "R"):
             seed = None
             continue
@@ -554,6 +557,7 @@ def _screen_match_odds(teams, tournament) -> None:
 
     knockout = stage in KNOCKOUT_STAGES
     verb = "advances" if knockout else "win"
+    sofa = load_form_extras()
     while True:
         _paint(_frame("MATCH ODDS", f"Running {n} simulations...",
                       ["", f"  {GREEN}Simulating {n} matches — please wait...{RESET}"], "", ""))
@@ -561,6 +565,7 @@ def _screen_match_odds(teams, tournament) -> None:
         sim = MatchSimulator(rng=rng)
         odds = sim.monte_carlo(home, away, n, stage=stage, neutral=not host,
                                home_lineup=home_lineup, away_lineup=away_lineup,
+                               home_extras=sofa.get(home.name), away_extras=sofa.get(away.name),
                                track_scorers=True)
 
         rows = [(f"{home.name} {verb}", odds.home_win)]
@@ -676,7 +681,7 @@ def _screen_bets(teams, tournament) -> None:
         event = polymarket.fetch_event(slug, teams)
     except polymarket.PolymarketError as exc:
         _notice("POLYMARKET BETS", "Network error",
-                ["", f"   Could not reach Polymarket:", f"   {exc}",
+                ["", "   Could not reach Polymarket:", f"   {exc}",
                  "", "   Check your connection and try again."])
         return
     if not event.matched:
@@ -730,8 +735,11 @@ def _game_detail(teams, game, hosts) -> None:
         _paint(_frame("MATCH vs MARKET", f"Simulating {game.home} vs {game.away}...",
                       ["", f"  {GREEN}Running {n} match simulations{extra}...{RESET}"], "", ""))
         sim = MatchSimulator(rng=random.Random())
+        # SofaScore form feeds upcoming fixtures only (a played game is graded
+        # against its pre-kickoff market — no look-ahead in the backtest).
+        extras = None if game.closed else load_form_extras()
         try:
-            comp = compare_game(sim, teams, game, n, host_names=hosts)
+            comp = compare_game(sim, teams, game, n, host_names=hosts, extras=extras)
         except Exception as exc:  # CLOB history can be missing for some games
             _notice("MATCH vs MARKET", game.title,
                     ["", "   Could not load market odds:", f"   {exc}"])
@@ -966,7 +974,7 @@ def _screen_tournament(teams, tournament) -> None:
     results = load_results()
     sim = TournamentSimulator(teams, tournament, rng=rng, results=results)
     lineups = lineup_map(teams)
-    outcome = sim.run_once(lineups=lineups)
+    outcome = sim.run_once(lineups=lineups, extras=load_form_extras())
 
     lines: list[str] = []
     if results:
@@ -994,6 +1002,53 @@ def _screen_tournament(teams, tournament) -> None:
     _pager("TOURNAMENT RESULT", f"One full run ({label}){xi}", lines)
 
 
+def _screen_html(teams, tournament) -> None:
+    import webbrowser
+    from pathlib import Path
+
+    from .html import render_dashboard
+    from .odds_store import load_odds
+    from .report import build_report
+
+    presets = ["Quick (500 sims)", "Standard (2000 sims)", "Sharp (5000 sims, slow)"]
+    counts = [500, 2000, 5000]
+    cidx = _menu("HTML DASHBOARD", "Build a self-contained dashboard and open it in your browser",
+                 presets, start=1)
+    if cidx is None:
+        return
+    n = counts[cidx]
+    game_iters = max(500, n // 2)
+
+    odds = load_odds()
+    src = (f"market snapshot {odds.fetched}" if odds
+           else "no odds snapshot (model-only — run scripts/update_odds.py)")
+
+    def progress(stage, done, total):
+        bar = _dash_bar(done, total or 1, 24)
+        _paint(_frame("HTML DASHBOARD", f"Building... ({src})",
+                      ["", f"  {GREEN}{stage:<16}{RESET} {bar} {done}/{total}"], "", ""))
+
+    results = load_results()
+    report = build_report(teams, tournament, results, odds,
+                          title_iters=n, game_iters=game_iters, seed=None,
+                          sofa_extras=load_form_extras(), progress=progress)
+    out = Path("dashboard.html").resolve()
+    out.write_text(render_dashboard(report), encoding="utf-8")
+    try:
+        webbrowser.open(out.as_uri())
+        opened = "opened in your browser"
+    except Exception:
+        opened = "open it manually"
+    _notice("HTML DASHBOARD", "Done",
+            ["", f"   {GREEN}Wrote {out}{RESET}",
+             f"   {out.stat().st_size // 1024} KB · {opened}",
+             "", f"   Source: {src}",
+             "", "   Regenerate live data anytime with:",
+             "     python scripts/update_results.py     (played scores)",
+             "     python scripts/update_odds.py        (market odds)",
+             "     python scripts/update_sofascore.py   (player form ratings)"])
+
+
 def _screen_odds(teams, tournament) -> None:
     presets = ["200 iterations (fast)", "500 iterations", "1000 iterations",
                "2000 iterations", "5000 iterations (slow)"]
@@ -1016,7 +1071,7 @@ def _screen_odds(teams, tournament) -> None:
     results = load_results()
     sim = TournamentSimulator(teams, tournament, rng=rng, results=results)
     lineups = lineup_map(teams)
-    report = sim.monte_carlo(n, lineups=lineups)
+    report = sim.monte_carlo(n, lineups=lineups, extras=load_form_extras())
 
     lines = [f"  {'Team':<22}{'R16':>8}{'QF':>8}{'SF':>8}{'Final':>8}{'Win':>8}", ""]
     for name, _p in report.title_odds()[:top]:
@@ -1044,6 +1099,7 @@ def run() -> None:
         ("Match odds vs market (Polymarket)", _screen_games),
         ("Performance dashboard (model vs market)", _screen_dashboard),
         ("Polymarket: compare & bet", _screen_bets),
+        ("Open HTML dashboard (browser)", _screen_html),
     ]
     labels = [name for name, _ in screens] + ["Quit"]
 
