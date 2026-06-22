@@ -91,7 +91,8 @@ def _current_standings(tournament: TournamentDef, results: list[PlayedResult],
     zones = ["auto", "auto", "third", "out"]
     groups: list[dict] = []
     for letter, names in tournament.groups.items():
-        gr = standings_from_results(letter, names, results, rng)
+        ratings = {n: teams[n].rating for n in names}
+        gr = standings_from_results(letter, names, results, rng, ratings)
         rows = []
         for i, s in enumerate(gr.standings):
             rows.append({

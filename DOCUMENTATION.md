@@ -372,9 +372,16 @@ worldcup match "Brazil" "Spain" --no-live             # fast aggregate model ins
 
 ### Group stage (`tournament/group_stage.py`)
 
-Round-robin within each group, ranked by FIFA tiebreakers (points, then GD, GF,
-…). Host nations get home advantage in their own games. `rank_third_placed`
-selects the best third-placed teams to fill the 32-team knockout field.
+Round-robin within each group, ranked by the FIFA 2026 tiebreakers in strict
+order: points, then — since the 48-team expansion — the **head-to-head** results
+among the tied teams (head-to-head points, GD, then goals scored, re-applied to
+any smaller subset that stays level) *before* the group-wide GD and goals scored,
+then fair play (not modelled — no cards in the engine) and the FIFA ranking
+(proxied by team rating) ahead of a drawing of lots (`rank_standings`). Host
+nations get home advantage in their own games. `rank_third_placed` selects the
+best third-placed teams to fill the 32-team knockout field, using the simplified
+order points → overall GD → goals scored → FIFA-ranking proxy (no head-to-head,
+since those teams come from different groups).
 
 ### Knockout (`tournament/knockout.py`)
 

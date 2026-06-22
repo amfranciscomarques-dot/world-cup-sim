@@ -104,7 +104,10 @@ class TournamentSimulator:
         winners = {g.letter: self.teams[g.winner.team] for g in groups}
         runners_up = {g.letter: self.teams[g.runner_up.team] for g in groups}
 
-        thirds = rank_third_placed(groups, self.rng, self.tournament.best_third_placed_advance)
+        ratings = {n: t.rating for n, t in self.teams.items()}
+        thirds = rank_third_placed(
+            groups, self.rng, self.tournament.best_third_placed_advance, ratings
+        )
         advancing_thirds = {s.team for s in thirds}
         thirds_by_group = {
             g.letter: self.teams[g.third.team]

@@ -2,9 +2,14 @@ import random
 
 from worldcup.data_loader import load_world_cup
 from worldcup.engine import MatchSimulator
-from worldcup.models import PlayedResult, Team
+from worldcup.models import MatchResult, PlayedResult, Team
 from worldcup.tournament import TournamentSimulator, play_group
-from worldcup.tournament.group_stage import GroupStanding, rank_standings
+from worldcup.tournament.group_stage import (
+    GroupResult,
+    GroupStanding,
+    rank_standings,
+    rank_third_placed,
+)
 from worldcup.tournament.knockout import (
     R32_LEAF_ORDER,
     R32_MATCHES,
@@ -70,6 +75,66 @@ def test_standings_sorted_by_points_then_gd():
     ]
     ranked = rank_standings(standings, [], random.Random(0))
     assert [s.team for s in ranked] == ["B", "C", "A"]
+
+
+def test_head_to_head_outranks_overall_goal_difference():
+    # A and B finish level on points; B has the far better overall goal
+    # difference, but A won their head-to-head meeting — which, since the 48-team
+    # expansion, is applied before overall goal difference.
+    standings = [
+        GroupStanding("A", pts=6, gf=4, ga=3),    # gd +1
+        GroupStanding("B", pts=6, gf=12, ga=2),   # gd +10
+    ]
+    results = [MatchResult("A", "B", 1, 0, stage="group")]
+    ranked = rank_standings(standings, results, random.Random(0))
+    assert [s.team for s in ranked] == ["A", "B"]
+
+
+def test_three_way_head_to_head_cycle_falls_through_to_overall():
+    # A beat B, B beat C, C beat A, all 1-0: the head-to-head mini-table is a
+    # perfect cycle (each 3 pts, gd 0, 1 gf among the trio), so it separates
+    # nobody and the group-wide goal difference decides instead.
+    standings = [
+        GroupStanding("A", pts=6, gf=3, ga=2),   # gd +1
+        GroupStanding("B", pts=6, gf=5, ga=2),   # gd +3 -> best overall
+        GroupStanding("C", pts=6, gf=4, ga=3),   # gd +1
+    ]
+    results = [
+        MatchResult("A", "B", 1, 0, stage="group"),
+        MatchResult("B", "C", 1, 0, stage="group"),
+        MatchResult("C", "A", 1, 0, stage="group"),
+    ]
+    ranked = rank_standings(standings, results, random.Random(0))
+    # B (best overall GD) tops the deadlocked trio; C edges A on overall goals for.
+    assert [s.team for s in ranked] == ["B", "C", "A"]
+
+
+def test_fifa_ranking_proxy_breaks_a_total_tie():
+    # Two teams identical on points and every goal tiebreak, drawn head-to-head:
+    # the FIFA-ranking proxy (rating) is the last resort before lots.
+    standings = [
+        GroupStanding("Low", pts=4, gf=3, ga=3),
+        GroupStanding("High", pts=4, gf=3, ga=3),
+    ]
+    results = [MatchResult("Low", "High", 1, 1, stage="group")]
+    ratings = {"Low": 70.0, "High": 85.0}
+    ranked = rank_standings(standings, results, random.Random(0), ratings)
+    assert [s.team for s in ranked] == ["High", "Low"]
+
+
+def test_rank_third_placed_uses_overall_gd_then_rating_proxy():
+    def grp(letter, third):
+        pad = [GroupStanding(letter + "1", pts=9), GroupStanding(letter + "2", pts=6)]
+        return GroupResult(letter=letter, standings=pad + [third], results=[])
+
+    a = GroupStanding("A3", pts=3, gf=4, ga=2)   # gd +2
+    b = GroupStanding("B3", pts=3, gf=2, ga=2)   # gd  0 -> worst, drops out
+    c = GroupStanding("C3", pts=3, gf=4, ga=2)   # gd +2, ties A3 on pts/gd/gf
+    groups = [grp("A", a), grp("B", b), grp("C", c)]
+    ratings = {"A3": 80.0, "B3": 50.0, "C3": 70.0}
+    ranked = rank_third_placed(groups, random.Random(0), 2, ratings)
+    # A3 and C3 tie through goals; A3's higher rating ranks it first; B3 misses out.
+    assert [s.team for s in ranked] == ["A3", "C3"]
 
 
 def test_bracket_seed_order_balanced():
