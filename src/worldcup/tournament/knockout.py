@@ -224,6 +224,9 @@ def play_knockout(
                     home_lineup=lineups.get(home.name), away_lineup=lineups.get(away.name),
                     home_extras=extras.get(home.name), away_extras=extras.get(away.name),
                 )
+            elif played:
+                match.date = played.date
+
             round_results.append(match)
             winners.append(home if match.winner == home.name else away)
         result.rounds.append(round_results)

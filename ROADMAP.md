@@ -85,13 +85,14 @@ Meaningful modelling upgrades; each is a contained change.
 - [ ] **More Polymarket market types.** Extend `betting.py` settlement beyond
       winner / reach-R16-QF / group-winner (e.g. top scorer, stage exits,
       head-to-heads) as markets appear.
-- [ ] **Calibration harness.** A repeatable script that scores the model's Brier/
+- [x] **Calibration harness against real matches.** Track Brier score and
       log-loss against historical tournaments to justify constant changes.
 
 ## Longer-term / exploratory
 
 Bigger bets — valuable but larger in scope.
 
+- [x] Dixon–Coles shipped (ρ = -0.1).
 - [ ] **Parameter fitting.** Fit `RATING_COEFF`, `BASE_GOALS`, and factor scales to
       historical match data instead of hand-tuning.
 - [ ] **Player-level match events.** Goalscorers, cards, and injuries *during* a

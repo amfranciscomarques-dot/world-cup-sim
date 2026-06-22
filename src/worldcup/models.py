@@ -170,6 +170,7 @@ class MatchResult:
     home_scorers: list = field(default_factory=list)
     away_scorers: list = field(default_factory=list)
     cooling_breaks: int = 0
+    date: str = ""
 
     @property
     def winner(self) -> Optional[str]:

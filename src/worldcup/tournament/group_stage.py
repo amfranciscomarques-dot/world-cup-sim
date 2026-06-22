@@ -202,6 +202,7 @@ def play_group(
                 home_goals=played.home_goals, away_goals=played.away_goals,
                 stage="group",
             )
+            result.date = played.date
             results.append(result)
             table[played.home].record(played.home_goals, played.away_goals)
             table[played.away].record(played.away_goals, played.home_goals)

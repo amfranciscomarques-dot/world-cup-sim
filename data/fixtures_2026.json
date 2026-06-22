@@ -1,0 +1,362 @@
+[
+  {
+    "match_id": "played_0",
+    "stage": "group",
+    "date": "2026-06-11",
+    "venue": "TBD",
+    "home": "Mexico",
+    "away": "South Africa",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_1",
+    "stage": "group",
+    "date": "2026-06-12",
+    "venue": "TBD",
+    "home": "Canada",
+    "away": "Bosnia-Herzegovina",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_2",
+    "stage": "group",
+    "date": "2026-06-12",
+    "venue": "TBD",
+    "home": "South Korea",
+    "away": "Czechia",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_3",
+    "stage": "group",
+    "date": "2026-06-13",
+    "venue": "TBD",
+    "home": "Brazil",
+    "away": "Morocco",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_4",
+    "stage": "group",
+    "date": "2026-06-13",
+    "venue": "TBD",
+    "home": "Qatar",
+    "away": "Switzerland",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_5",
+    "stage": "group",
+    "date": "2026-06-13",
+    "venue": "TBD",
+    "home": "USA",
+    "away": "Paraguay",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_6",
+    "stage": "group",
+    "date": "2026-06-14",
+    "venue": "TBD",
+    "home": "Australia",
+    "away": "Turkiye",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_7",
+    "stage": "group",
+    "date": "2026-06-14",
+    "venue": "TBD",
+    "home": "Germany",
+    "away": "Curacao",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_8",
+    "stage": "group",
+    "date": "2026-06-14",
+    "venue": "TBD",
+    "home": "Haiti",
+    "away": "Scotland",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_9",
+    "stage": "group",
+    "date": "2026-06-14",
+    "venue": "TBD",
+    "home": "Ivory Coast",
+    "away": "Ecuador",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_10",
+    "stage": "group",
+    "date": "2026-06-14",
+    "venue": "TBD",
+    "home": "Netherlands",
+    "away": "Japan",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_11",
+    "stage": "group",
+    "date": "2026-06-15",
+    "venue": "TBD",
+    "home": "Belgium",
+    "away": "Egypt",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_12",
+    "stage": "group",
+    "date": "2026-06-15",
+    "venue": "TBD",
+    "home": "Saudi Arabia",
+    "away": "Uruguay",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_13",
+    "stage": "group",
+    "date": "2026-06-15",
+    "venue": "TBD",
+    "home": "Spain",
+    "away": "Cape Verde",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_14",
+    "stage": "group",
+    "date": "2026-06-15",
+    "venue": "TBD",
+    "home": "Sweden",
+    "away": "Tunisia",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_15",
+    "stage": "group",
+    "date": "2026-06-16",
+    "venue": "TBD",
+    "home": "France",
+    "away": "Senegal",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_16",
+    "stage": "group",
+    "date": "2026-06-16",
+    "venue": "TBD",
+    "home": "Iran",
+    "away": "New Zealand",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_17",
+    "stage": "group",
+    "date": "2026-06-16",
+    "venue": "TBD",
+    "home": "Iraq",
+    "away": "Norway",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_18",
+    "stage": "group",
+    "date": "2026-06-17",
+    "venue": "TBD",
+    "home": "Argentina",
+    "away": "Algeria",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_19",
+    "stage": "group",
+    "date": "2026-06-17",
+    "venue": "TBD",
+    "home": "Austria",
+    "away": "Jordan",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_20",
+    "stage": "group",
+    "date": "2026-06-17",
+    "venue": "TBD",
+    "home": "England",
+    "away": "Croatia",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_21",
+    "stage": "group",
+    "date": "2026-06-17",
+    "venue": "TBD",
+    "home": "Ghana",
+    "away": "Panama",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_22",
+    "stage": "group",
+    "date": "2026-06-17",
+    "venue": "TBD",
+    "home": "Portugal",
+    "away": "DR Congo",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_23",
+    "stage": "group",
+    "date": "2026-06-18",
+    "venue": "TBD",
+    "home": "Canada",
+    "away": "Qatar",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_24",
+    "stage": "group",
+    "date": "2026-06-18",
+    "venue": "TBD",
+    "home": "Czechia",
+    "away": "South Africa",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_25",
+    "stage": "group",
+    "date": "2026-06-18",
+    "venue": "TBD",
+    "home": "Switzerland",
+    "away": "Bosnia-Herzegovina",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_26",
+    "stage": "group",
+    "date": "2026-06-18",
+    "venue": "TBD",
+    "home": "Uzbekistan",
+    "away": "Colombia",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_27",
+    "stage": "group",
+    "date": "2026-06-19",
+    "venue": "TBD",
+    "home": "Mexico",
+    "away": "South Korea",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_28",
+    "stage": "group",
+    "date": "2026-06-19",
+    "venue": "TBD",
+    "home": "Scotland",
+    "away": "Morocco",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_29",
+    "stage": "group",
+    "date": "2026-06-19",
+    "venue": "TBD",
+    "home": "USA",
+    "away": "Australia",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_30",
+    "stage": "group",
+    "date": "2026-06-20",
+    "venue": "TBD",
+    "home": "Brazil",
+    "away": "Haiti",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_31",
+    "stage": "group",
+    "date": "2026-06-20",
+    "venue": "TBD",
+    "home": "Germany",
+    "away": "Ivory Coast",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_32",
+    "stage": "group",
+    "date": "2026-06-20",
+    "venue": "TBD",
+    "home": "Netherlands",
+    "away": "Sweden",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_33",
+    "stage": "group",
+    "date": "2026-06-20",
+    "venue": "TBD",
+    "home": "Turkiye",
+    "away": "Paraguay",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_34",
+    "stage": "group",
+    "date": "2026-06-21",
+    "venue": "TBD",
+    "home": "Belgium",
+    "away": "Iran",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_35",
+    "stage": "group",
+    "date": "2026-06-21",
+    "venue": "TBD",
+    "home": "Ecuador",
+    "away": "Curacao",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_36",
+    "stage": "group",
+    "date": "2026-06-21",
+    "venue": "TBD",
+    "home": "Spain",
+    "away": "Saudi Arabia",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_37",
+    "stage": "group",
+    "date": "2026-06-21",
+    "venue": "TBD",
+    "home": "Tunisia",
+    "away": "Japan",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_38",
+    "stage": "group",
+    "date": "2026-06-21",
+    "venue": "TBD",
+    "home": "Uruguay",
+    "away": "Cape Verde",
+    "kickoff_local": "18:00"
+  },
+  {
+    "match_id": "played_39",
+    "stage": "group",
+    "date": "2026-06-22",
+    "venue": "TBD",
+    "home": "New Zealand",
+    "away": "Egypt",
+    "kickoff_local": "18:00"
+  }
+]
