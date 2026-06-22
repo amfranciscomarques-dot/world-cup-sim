@@ -527,6 +527,49 @@ def api_bets(body: dict) -> dict:
     }
 
 
+def api_tracker(qs: dict) -> dict:
+    from .tracker import load_bets, simulate_tracker_performance
+    teams, tournament = world()
+    results = load_results()
+    sim = TournamentSimulator(teams, tournament, rng=random.Random(), results=results)
+    bets = load_bets()
+    iters = int(qs.get("iterations", ["1000"])[0])
+    perf = simulate_tracker_performance(bets, sim, n=iters)
+    return {
+        "bets": [
+            {
+                "id": b.id,
+                "date_placed": b.date_placed,
+                "stake": b.stake,
+                "total_odds": b.total_odds,
+                "status": b.status,
+                "pnl": b.pnl,
+                "selections": [vars(s) for s in b.selections]
+            }
+            for b in bets
+        ],
+        "performance": perf
+    }
+
+
+def api_tracker_add(body: dict) -> dict:
+    from .tracker import load_bets, save_bets, Bet, BetSelection
+    import uuid
+    from datetime import datetime
+    bets = load_bets()
+    sels = [BetSelection(**s) for s in body["selections"]]
+    new_bet = Bet(
+        id=str(uuid.uuid4()),
+        date_placed=datetime.now().strftime("%Y-%m-%d"),
+        selections=sels,
+        stake=float(body["stake"]),
+        total_odds=float(body["total_odds"])
+    )
+    bets.append(new_bet)
+    save_bets(bets)
+    return {"status": "ok", "id": new_bet.id}
+
+
 def api_report(qs: dict) -> dict:
     teams, tournament = world()
 
@@ -654,8 +697,9 @@ class Handler(BaseHTTPRequestHandler):
             "/api/games": api_games_list,
             "/api/squad": lambda: api_squad(qs.get("team", [""])[0]),
             "/api/report": lambda: api_report(qs),
+            "/api/tracker": lambda: api_tracker(qs),
         }
-        fn = routes.get(path)
+
         if fn is None:
             return self._json({"error": "not found"}, 404)
         self._dispatch(fn)
@@ -677,6 +721,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/games/accuracy": api_games_accuracy,
             "/api/dashboard-live": api_dashboard_live,
             "/api/bets": api_bets,
+            "/api/tracker-add": api_tracker_add,
             "/api/insights": api_insights,
         }
         fn = routes.get(path)
@@ -866,10 +911,23 @@ const NAV=[
   ["games","Match odds vs market",vGames],
   ["perf","Performance dashboard",vPerf],
   ["bets","Polymarket: compare & bet",vBets],
+  ["tracker","Bet Tracker",vTracker],
   ["dashboard","Model-vs-market dashboard",vDashboard],
   ["update","Update data (live)",vUpdate],
   ["insights","AI Insights",vInsights],
 ];
+let M={}; async function init(){ M=await get('/api/meta'); vTeams(); }
+
+    from .data_loader import load_world_cup
+    teams, tournament = load_world_cup()
+    return {
+        "n_teams": len(teams),
+        "tournament": tournament.name,
+        "known_events": [
+            ("world-cup-winner", "World Cup Winner"),
+            ("world-cup-nation-to-reach-quarterfinals", "Reach Quarterfinals"),
+        ]
+    }
 
 async function get(p){const r=await fetch(p);const d=await r.json().catch(()=>({error:'bad response'}));if(d&&d.error)throw new Error(d.error);return d;}
 async function post(p,b){const r=await fetch(p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})});const d=await r.json().catch(()=>({error:'bad response'}));if(d&&d.error)throw new Error(d.error);return d;}
@@ -901,13 +959,13 @@ function segbar(t){ if(!t) return '<div class="seg"></div>';
 
 /* ---- 1. Teams ---- */
 async function vTeams(){
-  setView(head('Teams by group',`${M.n_teams} teams · ${M.tournament}`)+`<div id="out">${spin('Loading…')}</div>`);
-  try{ const d=await get('/api/teams');
+  setView(head('Teams by group',`${M.n_teams} teams · ${M.tournament}`)+`<div id="out"></div>`);
+    try{ const d=await get('/api/teams');
     $('#out').innerHTML='<div class="grid">'+d.groups.map(g=>`
-      <div class="card group-card"><div class="group-top"><span class="gletter">${esc(g.letter)}</span>Group ${esc(g.letter)}</div>
-      <table><tbody>${g.teams.map(t=>`<tr><td class="gteam">${esc(t.name)}</td><td class="num">${t.rating.toFixed(1)}</td></tr>`).join('')}</tbody></table></div>`).join('')+'</div>';
-  }catch(e){ $('#out').innerHTML=`<div class="error">${esc(e.message)}</div>`; }
-}
+     <div class="card group-card"><div class="group-top"><span class="gletter">${esc(g.letter)}</span>Group ${esc(g.letter)}</div>
+     <table><tbody>${g.teams.map(t=>`<tr><td class="gteam">${esc(t.name)}</td><td class="num">${t.rating.toFixed(1)}</td></tr>`).join('')}</tbody></table></div>`).join('')+'</div>';
+    }catch(e){ $('#out').innerHTML=`<div class="error">${esc(e.message)}</div>`; }
+    }
 
 /* ---- 2. Squads & XI editor ---- */
 function vSquads(){
@@ -1174,18 +1232,43 @@ function renderPerf(d){
       return `<tr><td>${esc(g.home)} ${esc(g.score||'')} ${esc(g.away)}</td><td>${g.result}</td><td>${g.model_pick}</td><td>${g.market_pick||'—'}</td><td>${v}${g.disagreed?' *':''}</td></tr>`;}).join('')}</tbody></table></div>`;
 }
 
-/* ---- 9. Polymarket: compare & bet (live) ---- */
-function vBets(){
+async function vBets(){
   const ev=M.known_events.map(([s,l])=>`<option value="${esc(s)}">${esc(l)}</option>`).join('');
   setView(head('Polymarket: compare & bet','Compare our model to a Polymarket futures market and size half-Kelly value bets.')
     +`<div class="controls">
       <label>Market <select id="bEvent">${ev}</select></label>
       <label>Iterations <select id="bIter"><option>500</option><option selected>1000</option><option>2000</option><option>5000</option></select></label>
       <label>Bankroll <select id="bBank"><option>100</option><option>500</option><option>1000</option></select></label>
-      <button class="primary" id="bRun">Run</button></div><div id="out"></div>`);
-  $('#bRun').onclick=async()=>{ const body={slug:$('#bEvent').value,iterations:Number($('#bIter').value),bankroll:Number($('#bBank').value)};
-    await run($('#bRun'),$('#out'),'Fetching market and simulating…',async()=>renderBets(await post('/api/bets',body))); };
+      <button class="primary" id="bRun">Run</button>
+      <button class="go" id="bSave">Save as Tracker Entry</button></div><div id="out"></div>`);
+  
+  let currentRep = null;
+  
+  $('#bRun').onclick=async()=>{ 
+    const body={slug:$('#bEvent').value,iterations:Number($('#bIter').value),bankroll:Number($('#bBank').value)};
+    await run($('#bRun'),$('#out'),'Fetching market and simulating…',async()=>{
+        currentRep = await post('/api/bets',body);
+        return renderBets(currentRep);
+    }); 
+  };
+  
+  $('#bSave').onclick = async () => {
+    if (!currentRep) { alert("Run analysis first"); return; }
+    const selections = currentRep.bets.map(b => ({
+      type: "outright",
+      selection: "Winner",
+      team: b.team,
+      odds: 1/b.price
+    }));
+    await post('/api/tracker-add', {
+      selections: selections,
+      stake: currentRep.total_staked,
+      total_odds: currentRep.total_staked > 0 ? (currentRep.mean_pnl / currentRep.total_staked + 1) : 1.0
+    });
+    alert("Bet added to tracker!");
+  };
 }
+
 function renderBets(d){
   const comps=d.comparisons.filter(c=>c.market>0).slice(0,20);
   const bets=d.bets.length?`<div class="card"><h3>Value bets — half-Kelly, $${d.bankroll} bankroll, $${d.total_staked.toFixed(2)} staked</h3>
@@ -1194,18 +1277,63 @@ function renderBets(d){
     <div class="kv" style="margin-top:10px"><span class="k">mean P&L</span><span class="${d.mean_pnl>=0?'pos':'neg'}">${money(d.mean_pnl)} · ROI ${sgn(d.roi)} · green ${pc0(d.win_rate)} of runs</span>
       <span class="k">P&L range</span><span class="num">p5 ${money(d.p5)} · median ${money(d.p50)} · p95 ${money(d.p95)}</span></div>
     <div class="subtle" style="margin-top:8px">Bets settle on the same model that prices them — this is edge variance, not a backtest.</div></div>`
-    :'<div class="card subtle">No positive-edge bets clear the threshold.</div>';
+    : '<div class="card subtle">No positive-edge bets clear the threshold.</div>';
   $('#out').innerHTML=`<div class="card"><h3>${esc(d.title)} <span class="subtle">· ${d.iterations} sims</span></h3>
     <table><thead><tr><th>Team</th><th class="num">Market</th><th class="num lime">Model</th><th class="num">Edge</th><th class="num">EV/$1</th></tr></thead>
     <tbody>${comps.map(c=>`<tr><td class="gteam">${esc(c.team)}</td><td class="num">${pc1(c.market)}</td><td class="num lime">${pc1(c.model)}</td>
       <td class="num ${c.edge>=0?'pos':'neg'}">${sgn(c.edge)}</td><td class="num ${c.ev>=0?'pos':'neg'}">${sgn(c.ev)}</td></tr>`).join('')}</tbody></table></div>${bets}`;
 }
 
+async function vTracker(){
+  setView(head('Bet Tracker','Historical simulated performance of your saved bets.')
+    +`<div class="controls">
+      <label>Simulations <select id="trIters"><option>100</option><option selected>500</option><option>1000</option></select></label>
+      <button id="trRefresh" class="btn btn-blue">Simulate Projected ROI</button>
+    </div>
+    <div id="trOut"></div>`);
+  
+  const run = async () => {
+    const iters = $('#trIters').value;
+    const res = await get('/api/tracker?iterations='+iters);
+    
+    let html = `<div class="card">
+      <h3>Projected ROI (Simulated)</h3>
+      <div class="grid">
+        <div><small>Mean P&L</small><div class="num ${res.performance.mean_pnl >= 0 ? 'pos' : 'neg'}">$${res.performance.mean_pnl.toFixed(2)}</div></div>
+        <div><small>Win Rate</small><div class="num">${(res.performance.win_rate*100).toFixed(1)}%</div></div>
+        <div><small>P5 / P95 Range</small><div class="num">$${res.performance.p5.toFixed(2)} / $${res.performance.p95.toFixed(2)}</div></div>
+      </div>
+    </div>`;
+
+    html += `<div class="card">
+      <h3>Bet History</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Stake</th><th>Odds</th><th>Status</th><th>PnL</th></tr></thead>
+        <tbody>` + res.bets.map(b => `
+          <tr>
+            <td>${b.date_placed}</td>
+            <td class="num">$${b.stake.toFixed(2)}</td>
+            <td class="num">${b.total_odds.toFixed(2)}</td>
+            <td><span class="pill ${b.status}">${b.status}</span></td>
+            <td class="num ${b.pnl >= 0 ? 'pos' : 'neg'}">$${b.pnl.toFixed(2)}</td>
+          </tr>
+        `).join('') + `</tbody>
+      </table>
+    </div>`;
+    
+    $('#trOut').innerHTML = html;
+  };
+
+  $('#trRefresh').onclick = run;
+  run();
+}
+
+
 /* ---- 10. Model-vs-market dashboard (offline snapshot) ---- */
 function vDashboard(){
   setView(head('Model-vs-market dashboard','The offline scoreboard (market snapshot). Build it here, or open the standalone HTML.')
     +`<div class="controls">
-      <label>Title sims <select id="rTitle"><option>500</option><option selected>1500</option><option>3000</option></select></label>
+
       <label>Game sims <select id="rGame"><option>400</option><option selected>800</option><option>1500</option></select></label>
       <button class="primary" id="rRun">Build</button>
       <a class="go" id="rOpen" style="text-decoration:none" target="_blank">Open standalone HTML ↗</a></div><div id="out"></div>`);
