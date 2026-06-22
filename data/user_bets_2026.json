@@ -1,0 +1,151 @@
+{
+  "_about": "User-entered real-money bets for the 2026 World Cup (June slip). Each bet has a stake, total decimal odds, and one or more selections. match_id ties a selection to a fixture in data/fixtures_2026.json; outright selections leave it blank. Edited by hand; the web UI's 'Save as Tracker Entry' button can append to this file too.",
+  "_fetched": "2026-06-22",
+  "bets": [
+    {
+      "id": "multipla_3sel_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 0.50,
+      "total_odds": 5.80,
+      "selections": [
+        {
+          "type": "over25",
+          "match_id": "match_021",
+          "label": "Argentina vs Austria Mais de 2.5",
+          "odds": 1.78
+        },
+        {
+          "type": "player_goal",
+          "match_id": "match_018",
+          "label": "França vs Iraque Dembélé Marca",
+          "odds": 1.83,
+          "player": "Ousmane Dembele"
+        },
+        {
+          "type": "over25",
+          "match_id": "match_019",
+          "label": "Noruega vs Senegal Mais de 2.5",
+          "odds": 1.78
+        }
+      ]
+    },
+    {
+      "id": "dupla_arg_nor_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 1.00,
+      "total_odds": 3.30,
+      "selections": [
+        {
+          "type": "match_result",
+          "match_id": "match_021",
+          "label": "Argentina ML",
+          "odds": 1.50,
+          "team": "Argentina",
+          "side": "home"
+        },
+        {
+          "type": "match_result",
+          "match_id": "match_019",
+          "label": "Noruega ML",
+          "odds": 2.20,
+          "team": "Norway",
+          "side": "away"
+        }
+      ]
+    },
+    {
+      "id": "simples_jordan_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 0.50,
+      "total_odds": 5.80,
+      "selections": [
+        {
+          "type": "match_result",
+          "match_id": "match_024",
+          "label": "Jordânia ML",
+          "odds": 5.80,
+          "team": "Jordan",
+          "side": "away"
+        }
+      ]
+    },
+    {
+      "id": "simples_mexico_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 2.00,
+      "total_odds": 1.91,
+      "selections": [
+        {
+          "type": "match_result",
+          "match_id": "match_001",
+          "label": "México ML",
+          "odds": 1.91,
+          "team": "Mexico",
+          "side": "home"
+        }
+      ]
+    },
+    {
+      "id": "simples_alemanha_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 2.00,
+      "total_odds": 1.88,
+      "selections": [
+        {
+          "type": "match_result",
+          "match_id": "match_009",
+          "label": "Alemanha ML",
+          "odds": 1.88,
+          "team": "Germany",
+          "side": "home"
+        }
+      ]
+    },
+    {
+      "id": "simples_australia_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 1.00,
+      "total_odds": 3.60,
+      "selections": [
+        {
+          "type": "match_result",
+          "match_id": "match_008",
+          "label": "Austrália ML",
+          "odds": 3.60,
+          "team": "Australia",
+          "side": "away"
+        }
+      ]
+    },
+    {
+      "id": "outright_england_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 1.00,
+      "total_odds": 7.10,
+      "selections": [
+        {
+          "type": "outright",
+          "match_id": "",
+          "label": "Vencedor Final: Inglaterra",
+          "odds": 7.10,
+          "team": "England"
+        }
+      ]
+    },
+    {
+      "id": "outright_spain_2026-06-22",
+      "date_placed": "2026-06-22",
+      "stake": 1.00,
+      "total_odds": 6.80,
+      "selections": [
+        {
+          "type": "outright",
+          "match_id": "",
+          "label": "Vencedor Final: Espanha",
+          "odds": 6.80,
+          "team": "Spain"
+        }
+      ]
+    }
+  ]
+}

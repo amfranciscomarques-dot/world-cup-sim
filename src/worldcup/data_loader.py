@@ -15,6 +15,7 @@ DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 DEFAULT_TEAMS = DATA_DIR / "teams_2026.json"
 DEFAULT_TOURNAMENT = DATA_DIR / "tournament_2026.json"
 DEFAULT_RESULTS = DATA_DIR / "results_2026.json"
+DEFAULT_FIXTURES = DATA_DIR / "fixtures_2026.json"
 
 
 @dataclass
@@ -90,6 +91,21 @@ def load_results(path: Path | str = DEFAULT_RESULTS) -> list[PlayedResult]:
         )
         for r in raw.get("results", [])
     ]
+
+
+def load_fixtures(path: Path | str = DEFAULT_FIXTURES) -> list[dict]:
+    """Load the fixture schedule (every group-stage + knockout tie, played or not).
+
+    The file is a flat list of ``{match_id, stage, date, home, away, ...}``
+    records — produced by ``scripts/regenerate_fixtures_2026.py`` and seeded
+    with the verified draw. The ``match_id`` is the stable identifier the bet
+    tracker keys selections on, so it must be present on every record.
+    """
+    p = Path(path)
+    if not p.exists():
+        return []
+    raw = json.loads(p.read_text(encoding="utf-8"))
+    return list(raw) if isinstance(raw, list) else raw.get("fixtures", [])
 
 
 def refresh_results(

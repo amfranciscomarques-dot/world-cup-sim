@@ -575,6 +575,27 @@ def cmd_html(args: argparse.Namespace) -> None:
         webbrowser.open(out.resolve().as_uri())
 
 
+def cmd_tracker(args: argparse.Namespace) -> None:
+    """Build the self-contained HTML tracker page (your bets vs the model).
+
+    Reads ``data/user_bets_2026.json``, prices every selection against the
+    engine via ``report.build_tracker_report``, and writes a single
+    standalone HTML file you can open in any browser — no server needed.
+    """
+    import webbrowser
+    from pathlib import Path
+
+    from .html import render_tracker_html
+    from .report import build_tracker_report
+
+    rep = build_tracker_report(iterations=args.iterations, seed=args.seed)
+    out = Path(args.output)
+    out.write_text(render_tracker_html(rep), encoding="utf-8")
+    print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
+    if not args.no_open:
+        webbrowser.open(out.resolve().as_uri())
+
+
 def _live_snapshot(teams, tournament) -> "object":
     """Build an OddsSnapshot from live Polymarket data (no file write)."""
     from datetime import date
@@ -721,6 +742,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-sofa", action="store_true",
                    help="ignore in-tournament SofaScore form when rating the teams")
     p.set_defaults(func=cmd_html)
+
+    p = sub.add_parser("tracker", help="write a self-contained HTML tracker page (your bets vs the model)")
+    p.add_argument("-o", "--output", default="tracker.html",
+                   help="output file (default tracker.html)")
+    p.add_argument("-n", "--iterations", type=int, default=500,
+                   help="Monte Carlo runs for the P&L distribution (default 500)")
+    p.add_argument("--seed", type=int, default=None)
+    p.add_argument("--no-open", action="store_true",
+                   help="write the file but don't open a browser")
+    p.set_defaults(func=cmd_tracker)
 
     return parser
 

@@ -278,3 +278,176 @@ def build_report(
         "performance": performance,
         "value_bets": value,
     }
+
+
+# --- Tracker report (user bets, model vs market, projected ROI) -----------
+
+
+def _settle_bets_for_one_run(
+    tsim: "TournamentSimulator",
+    bets,
+    fixture_lookup: dict[tuple[str, str], dict],
+) -> dict[str, bool]:
+    """Run one tournament and return a ``match_id -> hit?`` map.
+
+    A selection "hits" when its fixture produces a non-draw match (for ML /
+    over / under / scorer) or when the backed team wins the tournament (for
+    outrights). Knockout ties always produce a winner via extra time + pens
+    so they always settle.
+    """
+    from .tracker import BetSelection
+
+    outcome = tsim.run_once()
+    hits: dict[str, bool] = {}
+    # Group stage: a draw is a loss for every ML bet; settle only the fixtures
+    # whose match_id we know about.
+    for gr in outcome.groups:
+        for r in gr.results:
+            f = fixture_lookup.get((r.home, r.away)) or fixture_lookup.get((r.away, r.home))
+            if f is None:
+                continue
+            hits[f["match_id"]] = (r.winner is not None)
+    # Knockout rounds: each match has a winner (ET or pens).
+    for rnd in outcome.knockout.rounds:
+        for r in rnd:
+            f = fixture_lookup.get((r.home, r.away)) or fixture_lookup.get((r.away, r.home))
+            if f is None:
+                continue
+            hits[f["match_id"]] = (r.winner is not None)
+    # Outrights.
+    champ = outcome.champion
+    for b in bets:
+        for sel in b.selections:
+            if sel.type == "outright":
+                hits[f"outright:{sel.team}"] = (champ == sel.team)
+    return hits
+
+
+def build_tracker_report(*, iterations: int = 500, seed: Optional[int] = None) -> dict:
+    """Assemble the full tracker page payload — the same data the API
+    endpoint and the standalone HTML page both consume.
+
+    The expensive parts (per-selection pricing + a Monte-Carlo run per bet
+    iteration) are kept in one place so the in-app view and the static page
+    can never drift apart.
+    """
+    from .data_loader import load_fixtures, load_results, load_world_cup
+    from .odds_store import load_odds
+    from .tracker import load_bets, price_selection, simulate_tracker_performance
+
+    teams, tournament = load_world_cup()
+    fixtures_list = load_fixtures()
+    fixtures_map = {f["match_id"]: f for f in fixtures_list}
+    odds = load_odds()
+    results = load_results()
+    fixture_lookup = {(f["home"], f["away"]): f for f in fixtures_list}
+
+    bets = load_bets()
+    sim = MatchSimulator(rng=random.Random(seed))
+
+    # Per-selection pricing.
+    selections: list[dict] = []
+    for b in bets:
+        for sel in b.selections:
+            try:
+                cmp = price_selection(
+                    sel,
+                    sim=sim, teams=teams, fixtures=fixtures_map, odds=odds,
+                )
+                selections.append({
+                    "bet_id": b.id,
+                    "match_id": sel.match_id,
+                    "type": sel.type,
+                    "label": sel.label,
+                    "odds": sel.odds,
+                    "team": sel.team,
+                    "player": sel.player,
+                    "side": sel.side,
+                    "model_prob": cmp.model_prob,
+                    "implied_prob": cmp.implied_prob,
+                    "edge": cmp.edge,
+                    "fair_odds": cmp.fair_odds,
+                })
+            except (KeyError, ValueError) as exc:
+                selections.append({
+                    "bet_id": b.id,
+                    "match_id": sel.match_id,
+                    "type": sel.type,
+                    "label": sel.label,
+                    "odds": sel.odds,
+                    "team": sel.team,
+                    "player": sel.player,
+                    "side": sel.side,
+                    "error": str(exc),
+                })
+
+    # Per-bet P&L distribution via Monte-Carlo settlement.
+    if bets:
+        tsim = TournamentSimulator(teams, tournament, rng=random.Random(seed),
+                                   results=results)
+
+        def settle(bet, run_idx):
+            base = _settle_bets_for_one_run(tsim, bets, fixture_lookup)
+            # Map outright selections onto the outright:team keys produced
+            # by the per-run helper above.
+            wrapped = dict(base)
+            for sel in bet.selections:
+                if sel.type == "outright":
+                    wrapped.setdefault(
+                        sel.match_id or f"outright:{sel.team}",
+                        base.get(f"outright:{sel.team}", False),
+                    )
+            return wrapped
+
+        perf = simulate_tracker_performance(bets, settle, n=iterations)
+        performance = {
+            "iterations": perf.iterations,
+            "total_staked": perf.total_staked,
+            "mean_pnl": perf.mean_pnl,
+            "roi": perf.roi,
+            "win_rate": perf.win_rate,
+            "p5": perf.percentile(0.05),
+            "p50": perf.percentile(0.50),
+            "p95": perf.percentile(0.95),
+            "per_bet_pnl": perf.per_bet_pnl,
+        }
+    else:
+        performance = {
+            "iterations": iterations, "total_staked": 0.0, "mean_pnl": 0.0,
+            "roi": 0.0, "win_rate": 0.0, "p5": 0.0, "p50": 0.0, "p95": 0.0,
+            "per_bet_pnl": {},
+        }
+
+    return {
+        "meta": {
+            "tournament": tournament.name,
+            "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+            "n_bets": len(bets),
+            "n_selections": len(selections),
+            "odds_fetched": odds.fetched if odds else None,
+        },
+        "bets": [
+            {
+                "id": b.id,
+                "date_placed": b.date_placed,
+                "stake": b.stake,
+                "total_odds": b.total_odds,
+                "selections": [
+                    {
+                        "type": s.type,
+                        "label": s.label,
+                        "odds": s.odds,
+                        "match_id": s.match_id,
+                        "team": s.team,
+                        "player": s.player,
+                        "side": s.side,
+                    }
+                    for s in b.selections
+                ],
+            }
+            for b in bets
+        ],
+        "selections": selections,
+        "performance": performance,
+    }
+

@@ -1,0 +1,22 @@
+{
+  "date": "2026-06-22",
+  "iterations": 8000,
+  "bankroll": 100.0,
+  "kelly": 0.5,
+  "min_edge": 0.02,
+  "bets": [
+    {
+      "game": "Argentina vs. Austria",
+      "slug": "fifwc-arg-aut-2026-06-22",
+      "market": "1X2",
+      "selection": "Argentina",
+      "model_prob": 0.696,
+      "fair_odds": 1.489,
+      "edge": 0.0244,
+      "kelly_full": 0.0742,
+      "kelly_stake": 0.0371,
+      "stake_$_per_100": 3.71,
+      "ev_per_$_stake": 0.0363
+    }
+  ]
+}

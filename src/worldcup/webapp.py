@@ -36,7 +36,7 @@ from urllib.parse import parse_qs, urlparse
 
 from . import polymarket
 from .betting import run_betting
-from .data_loader import load_results, load_world_cup, refresh_results
+from .data_loader import load_fixtures, load_results, load_world_cup, refresh_results
 from .engine import KNOCKOUT_STAGES, MatchSimulator
 from .factors.builtin import ChemistryFactor, CoachFactor, club_clusters, team_intangibles
 from .fm_rating import MENTAL, PHYSICAL, group_means, technical_attrs
@@ -528,13 +528,131 @@ def api_bets(body: dict) -> dict:
 
 
 def api_tracker(qs: dict) -> dict:
-    from .tracker import load_bets, simulate_tracker_performance
+    """Return saved bets + the model's price for every selection.
+
+    The performance simulation runs ``n`` iterations; each bet is settled
+    against the *same* Monte-Carlo tournament outcome that prices it (so the
+    P&L tracks the analytic edge — see :mod:`worldcup.tracker` for the
+    caveat). The per-selection comparison is what stands on its own: it
+    surfaces the model's probability for every leg alongside the
+    bookmaker's implied probability, so the user can see edge per bet.
+    """
+    from .tracker import (
+        load_bets,
+        simulate_tracker_performance,
+        price_selection,
+    )
     teams, tournament = world()
-    results = load_results()
-    sim = TournamentSimulator(teams, tournament, rng=random.Random(), results=results)
+    fixtures_map = {f["match_id"]: f for f in load_fixtures()}
+    odds = load_odds()
+    iters = max(1, min(20000, int(qs.get("iterations", ["1000"])[0])))
+
+    sim = MatchSimulator(rng=random.Random())
     bets = load_bets()
-    iters = int(qs.get("iterations", ["1000"])[0])
-    perf = simulate_tracker_performance(bets, sim, n=iters)
+
+    # Per-selection model price vs bookmaker implied.
+    selections: list[dict] = []
+    for b in bets:
+        for sel in b.selections:
+            try:
+                cmp = price_selection(
+                    sel,
+                    sim=sim, teams=teams, fixtures=fixtures_map, odds=odds,
+                )
+                selections.append({
+                    "bet_id": b.id,
+                    "match_id": sel.match_id,
+                    "type": sel.type,
+                    "label": sel.label,
+                    "odds": sel.odds,
+                    "team": sel.team,
+                    "player": sel.player,
+                    "side": sel.side,
+                    "model_prob": cmp.model_prob,
+                    "implied_prob": cmp.implied_prob,
+                    "edge": cmp.edge,
+                    "fair_odds": cmp.fair_odds,
+                })
+            except (KeyError, ValueError) as exc:
+                selections.append({
+                    "bet_id": b.id,
+                    "match_id": sel.match_id,
+                    "type": sel.type,
+                    "label": sel.label,
+                    "odds": sel.odds,
+                    "error": str(exc),
+                })
+
+    # Run a tournament-level Monte Carlo: settle each bet on every iteration
+    # by checking whether the team that backed (per the selection) won the
+    # relevant fixture / tournament. This is the same settle-once-per-run
+    # pattern as ``worldcup.betting.run_betting``.
+    if bets:
+        from .tournament import TournamentSimulator
+        tsim = TournamentSimulator(teams, tournament, rng=random.Random(),
+                                   results=load_results())
+        fixture_lookup = {(f["home"], f["away"]): f for f in fixtures_map.values()}
+
+        def settle_one_run(run_idx: int) -> dict[str, bool]:
+            outcome = tsim.run_once()
+            hits: dict[str, bool] = {}
+            # Group games: settle per-fixture from each GroupResult.results.
+            for gr in outcome.groups:
+                for r in gr.results:
+                    f = fixture_lookup.get((r.home, r.away))
+                    if f is None:
+                        f = fixture_lookup.get((r.away, r.home))
+                    if f is None:
+                        continue
+                    # A draw is a loss for ML bets (the user didn't back the draw).
+                    hits[f["match_id"]] = (r.winner is not None)
+            # Knockout games: each round is a list of MatchResults; settle by match.
+            for rnd in outcome.knockout.rounds:
+                for r in rnd:
+                    f = fixture_lookup.get((r.home, r.away))
+                    if f is None:
+                        f = fixture_lookup.get((r.away, r.home))
+                    if f is None:
+                        continue
+                    hits[f["match_id"]] = (r.winner is not None)
+            # Outrights: any team that finished as champion.
+            champ = outcome.champion
+            for b in bets:
+                for sel in b.selections:
+                    if sel.type == "outright":
+                        hits[f"outright:{sel.team}"] = (champ == sel.team)
+            return hits
+
+        def settle(bet, run_idx):
+            base = settle_one_run(run_idx)
+            # Map outright selections to "outright:team" keys.
+            wrapped = dict(base)
+            for sel in bet.selections:
+                if sel.type == "outright":
+                    wrapped[sel.match_id or f"outright:{sel.team}"] = base.get(
+                        f"outright:{sel.team}", False
+                    )
+            return wrapped
+
+        perf = simulate_tracker_performance(bets, settle, n=iters)
+        performance = {
+            "iterations": perf.iterations,
+            "total_staked": perf.total_staked,
+            "mean_pnl": perf.mean_pnl,
+            "roi": perf.roi,
+            "win_rate": perf.win_rate,
+            "p5": perf.percentile(0.05),
+            "p50": perf.percentile(0.50),
+            "p95": perf.percentile(0.95),
+            "per_bet_pnl": perf.per_bet_pnl,
+        }
+    else:
+        performance = {
+            "iterations": iters, "total_staked": 0.0, "mean_pnl": 0.0,
+            "roi": 0.0, "win_rate": 0.0, "p5": 0.0, "p50": 0.0, "p95": 0.0,
+            "per_bet_pnl": {},
+        }
+
     return {
         "bets": [
             {
@@ -542,13 +660,12 @@ def api_tracker(qs: dict) -> dict:
                 "date_placed": b.date_placed,
                 "stake": b.stake,
                 "total_odds": b.total_odds,
-                "status": b.status,
-                "pnl": b.pnl,
-                "selections": [vars(s) for s in b.selections]
+                "selections": [vars(s) for s in b.selections],
             }
             for b in bets
         ],
-        "performance": perf
+        "selections": selections,
+        "performance": performance,
     }
 
 
@@ -588,6 +705,24 @@ def api_report(qs: dict) -> dict:
 def api_dashboard_html(qs: dict) -> str:
     from .html import render_dashboard
     return render_dashboard(api_report(qs))
+
+
+def api_tracker_html(qs: dict) -> str:
+    """Render the standalone tracker page (HTML, no JSON wrapper).
+
+    Query params: ``iterations`` (default 500), ``seed`` (optional int).
+    Same data path as the in-app ``vTracker`` screen; uses
+    :func:`worldcup.report.build_tracker_report` so the two views cannot
+    drift apart.
+    """
+    from .html import render_tracker_html
+    from .report import build_tracker_report
+
+    iterations = max(1, min(20000, int(qs.get("iterations", ["500"])[0])))
+    seed_raw = qs.get("seed", [None])[0]
+    seed = int(seed_raw) if seed_raw not in (None, "", "None") else None
+    rep = build_tracker_report(iterations=iterations, seed=seed)
+    return render_tracker_html(rep)
 
 
 # --- HTTP plumbing ----------------------------------------------------------
@@ -690,6 +825,11 @@ class Handler(BaseHTTPRequestHandler):
                 return self._html(api_dashboard_html(qs))
             except Exception as exc:
                 return self._html(f"<h1>Error</h1><pre>{exc}</pre>", 500)
+        if path == "/tracker.html":
+            try:
+                return self._html(api_tracker_html(qs))
+            except Exception as exc:
+                return self._html(f"<h1>Error</h1><pre>{exc}</pre>", 500)
         routes = {
             "/api/meta": api_meta,
             "/api/teams": api_teams,
@@ -700,6 +840,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/tracker": lambda: api_tracker(qs),
         }
 
+        fn = routes.get(path)
         if fn is None:
             return self._json({"error": "not found"}, 404)
         self._dispatch(fn)
@@ -916,18 +1057,7 @@ const NAV=[
   ["update","Update data (live)",vUpdate],
   ["insights","AI Insights",vInsights],
 ];
-let M={}; async function init(){ M=await get('/api/meta'); vTeams(); }
-
-    from .data_loader import load_world_cup
-    teams, tournament = load_world_cup()
-    return {
-        "n_teams": len(teams),
-        "tournament": tournament.name,
-        "known_events": [
-            ("world-cup-winner", "World Cup Winner"),
-            ("world-cup-nation-to-reach-quarterfinals", "Reach Quarterfinals"),
-        ]
-    }
+M={}; async function init(){ M=await get('/api/meta'); vTeams(); }
 
 async function get(p){const r=await fetch(p);const d=await r.json().catch(()=>({error:'bad response'}));if(d&&d.error)throw new Error(d.error);return d;}
 async function post(p,b){const r=await fetch(p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})});const d=await r.json().catch(()=>({error:'bad response'}));if(d&&d.error)throw new Error(d.error);return d;}
@@ -1285,43 +1415,91 @@ function renderBets(d){
 }
 
 async function vTracker(){
-  setView(head('Bet Tracker','Historical simulated performance of your saved bets.')
+  setView(head('Bet Tracker','Real bets you placed, priced against our model. The P&L band is a Monte-Carlo projection through the same engine that prices every leg; the per-leg table is what stands on its own — model probability vs bookmaker implied probability, with edge.')
     +`<div class="controls">
-      <label>Simulations <select id="trIters"><option>100</option><option selected>500</option><option>1000</option></select></label>
-      <button id="trRefresh" class="btn btn-blue">Simulate Projected ROI</button>
+      <label>Simulations <select id="trIters"><option>100</option><option selected>500</option><option>1000</option><option>2000</option></select></label>
+      <button id="trRefresh" class="btn btn-blue">Refresh</button>
+      <a id="trOpen" class="go" style="text-decoration:none" target="_blank">Open standalone HTML ↗</a>
     </div>
     <div id="trOut"></div>`);
-  
-  const run = async () => {
-    const iters = $('#trIters').value;
-    const res = await get('/api/tracker?iterations='+iters);
-    
-    let html = `<div class="card">
-      <h3>Projected ROI (Simulated)</h3>
+  const linkOpen = () => { $('#trOpen').href = `/tracker.html?iterations=${$('#trIters').value}`; };
+  $('#trIters').onchange = linkOpen;
+  linkOpen();
+
+  const render = (res) => {
+    const perf = res.performance;
+    const bets = res.bets;
+    const sels = res.selections || [];
+
+    // Headline KPIs.
+    const kpi = (label, value, cls='') => `<div><small>${label}</small><div class="num ${cls}">${value}</div></div>`;
+    const hero = `<div class="card">
+      <h3>Projected ROI (Monte Carlo)</h3>
       <div class="grid">
-        <div><small>Mean P&L</small><div class="num ${res.performance.mean_pnl >= 0 ? 'pos' : 'neg'}">$${res.performance.mean_pnl.toFixed(2)}</div></div>
-        <div><small>Win Rate</small><div class="num">${(res.performance.win_rate*100).toFixed(1)}%</div></div>
-        <div><small>P5 / P95 Range</small><div class="num">$${res.performance.p5.toFixed(2)} / $${res.performance.p95.toFixed(2)}</div></div>
+        ${kpi('Total staked', `€${perf.total_staked.toFixed(2)}`)}
+        ${kpi('Mean P&L', `${perf.mean_pnl >= 0 ? '+' : ''}€${perf.mean_pnl.toFixed(2)}`, perf.mean_pnl >= 0 ? 'pos' : 'neg')}
+        ${kpi('ROI', `${perf.roi >= 0 ? '+' : ''}${(perf.roi * 100).toFixed(1)}%`, perf.roi >= 0 ? 'pos' : 'neg')}
+        ${kpi('Win rate', `${(perf.win_rate * 100).toFixed(1)}%`)}
+        ${kpi('P5 / P95', `€${perf.p5.toFixed(2)} / €${perf.p95.toFixed(2)}`)}
+        ${kpi('Sims', `${perf.iterations}`)}
       </div>
+      <div class="subtle" style="margin-top:8px">Bets settle on the same model that prices them — this is edge variance, not an independent backtest.</div>
     </div>`;
 
-    html += `<div class="card">
-      <h3>Bet History</h3>
+    // Per-leg comparison table.
+    const selRows = sels.map(s => {
+      if (s.error) return `<tr><td colspan="6"><span class="neg">${esc(s.label)}</span> <span class="subtle">${esc(s.error)}</span></td></tr>`;
+      const edgeCls = s.edge > 0.02 ? 'pos' : (s.edge < -0.02 ? 'neg' : '');
+      const edgeTxt = s.edge >= 0 ? '+' : '';
+      return `<tr>
+        <td>${esc(s.label)}<br><span class="subtle">${esc(s.type)}${s.team ? ' · ' + esc(s.team) : ''}${s.player ? ' · ' + esc(s.player) : ''}</span></td>
+        <td class="num">${s.odds.toFixed(2)}</td>
+        <td class="num">${(s.implied_prob * 100).toFixed(1)}%</td>
+        <td class="num lime">${(s.model_prob * 100).toFixed(1)}%</td>
+        <td class="num ${edgeCls}">${edgeTxt}${(s.edge * 100).toFixed(1)}%</td>
+        <td class="num">${s.fair_odds.toFixed(2)}</td>
+      </tr>`;
+    }).join('');
+    const cmpTbl = `<div class="card">
+      <h3>Per-leg model vs market</h3>
       <table>
-        <thead><tr><th>Date</th><th>Stake</th><th>Odds</th><th>Status</th><th>PnL</th></tr></thead>
-        <tbody>` + res.bets.map(b => `
-          <tr>
-            <td>${b.date_placed}</td>
-            <td class="num">$${b.stake.toFixed(2)}</td>
-            <td class="num">${b.total_odds.toFixed(2)}</td>
-            <td><span class="pill ${b.status}">${b.status}</span></td>
-            <td class="num ${b.pnl >= 0 ? 'pos' : 'neg'}">$${b.pnl.toFixed(2)}</td>
-          </tr>
-        `).join('') + `</tbody>
+        <thead><tr><th>Selection</th><th class="num">Book</th><th class="num">Implied</th><th class="num">Model</th><th class="num">Edge</th><th class="num">Fair</th></tr></thead>
+        <tbody>${selRows || `<tr><td colspan="6" class="subtle">No saved selections.</td></tr>`}</tbody>
+      </table>
+      <div class="subtle" style="margin-top:8px"><b>Book</b> = decimal odds. <b>Implied</b> = bookmaker's probability (vig-included). <b>Model</b> = our engine's probability. <b>Edge</b> = model − implied (positive = value). <b>Fair</b> = 1 / model.</div>
+    </div>`;
+
+    // Bet history with per-bet performance from the latest run.
+    const betRows = bets.map(b => {
+      const pnlSeries = (perf.per_bet_pnl && perf.per_bet_pnl[b.id]) || [];
+      const mean = pnlSeries.length ? pnlSeries.reduce((a, x) => a + x, 0) / pnlSeries.length : 0;
+      const cls = mean >= 0 ? 'pos' : 'neg';
+      const wins = pnlSeries.filter(x => x > 0).length;
+      const wr = pnlSeries.length ? (wins / pnlSeries.length * 100).toFixed(0) : '0';
+      return `<tr>
+        <td>${b.date_placed}<br><span class="subtle mono">${esc(b.id)}</span></td>
+        <td>${b.selections.map(s => esc(s.label)).join(' + ')}</td>
+        <td class="num">€${b.stake.toFixed(2)}</td>
+        <td class="num">${b.total_odds.toFixed(2)}</td>
+        <td class="num ${cls}">${mean >= 0 ? '+' : ''}€${mean.toFixed(2)}</td>
+        <td class="num">${wr}%</td>
+      </tr>`;
+    }).join('');
+    const histTbl = `<div class="card">
+      <h3>Bet history</h3>
+      <table>
+        <thead><tr><th>Placed</th><th>Selections</th><th class="num">Stake</th><th class="num">Odds</th><th class="num">Mean P&L</th><th class="num">Win%</th></tr></thead>
+        <tbody>${betRows || `<tr><td colspan="6" class="subtle">No saved bets.</td></tr>`}</tbody>
       </table>
     </div>`;
-    
-    $('#trOut').innerHTML = html;
+
+    $('#trOut').innerHTML = hero + cmpTbl + histTbl;
+  };
+
+  const run = async () => {
+    const iters = $('#trIters').value;
+    const res = await get('/api/tracker?iterations=' + iters);
+    render(res);
   };
 
   $('#trRefresh').onclick = run;
