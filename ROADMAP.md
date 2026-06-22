@@ -75,9 +75,13 @@ Meaningful modelling upgrades; each is a contained change.
       than a static `extras` value.
 - [ ] **Live, time-decaying form.** Update `extras['form']` from recent results
       during a tournament run instead of a fixed pre-set value.
-- [ ] **Weather / venue factors.** Altitude (Mexico City), humidity, and a real
+- [x] **Weather / venue factors.** Altitude (Mexico City), humidity, and a real
       `temperature` per fixture feeding both the heat-break logic and a wet-pitch
-      factor.
+      factor. → *Shipped `factors/heat.py` (H1–H6 + heat-pace multiplier in
+      `engine/match.py`). Six reusable causal chunks from the WC heat-betting
+      insight, plus a 16-venue table with 3 AC venues. Tests in
+      `tests/test_heat.py` (28 cases). Opt-in per match via `meta={'venue',
+      'wbgt_c'}`.*
 - [ ] **More Polymarket market types.** Extend `betting.py` settlement beyond
       winner / reach-R16-QF / group-winner (e.g. top scorer, stage exits,
       head-to-heads) as markets appear.

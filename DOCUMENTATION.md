@@ -269,6 +269,49 @@ Live in `factors/builtin.py`. The default registry applies them in this order:
 | **intangibles** | per-player `xfactor` / age curve | Draws one Gaussian shock per side per match: `mean` (knowable drift) + `sigma` (genuine swing), clamped ±6. See below. |
 | **form** | `extras['form']` ∈ [−1,1] | ±3 rating at the extremes. Opt-in; 0/unset = neutral. |
 
+### Heat / venue factors (`factors/heat.py`)
+
+The 2026 World Cup is played across U.S. and Mexico in June–July. Six reusable
+causal chunks (H1–H6) from the tournament-heat betting analysis
+(`Documents/Nova/insights/wc2026-heat-impact-betting-edges-20260622.md`) are
+encoded as factors. They compose freely with everything above and are no-ops
+when no `venue` / `wbgt_c` is set in `meta`.
+
+| Factor | Reads | Effect |
+|--------|-------|--------|
+| **venue_asymmetry** | `meta['venue']` (no WBGT set) | Pure lookup: fills `meta['wbgt_c']` from the venue's nominal June–July WBGT, plus venue offset; AC venues hard-clamped to ≤ 24°C. Idempotent — never overwrites a caller-supplied WBGT. |
+| **heat_stamina** | `meta['wbgt_c']` | H1. Symmetric penalty to attack and defense, scaled from 26°C (FIFA cooling-break threshold) up to 30°C; cap at the constructor's `scale` (default 8 points). |
+| **press_intensity** | `meta['wbgt_c']`, per-side `extras['tactical_bias']` ∈ [−1,+1] | H2. The pass-completion paradox. High-press sides in heat see attack + / defense − (the press is their defence but it fades); low-block sides see the inverse. Max swap 3 points at severe WBGT. |
+| **peak_speed** | `meta['wbgt_c']`, per-side `extras['peak_speed']` | H3. +1 rating point attack shock at severe WBGT (the +4% isolated peak-speed anomaly). Random per match via the context RNG. |
+| **knockout_heat_draw** | `meta['wbgt_c']`, `ctx.stage` ∈ {R32…F} | H4. Compresses both sides' attack and defense in knockout games at unsafe WBGT — scorelines flatten → more draws → more penalties (the r=0.82 signal). |
+| **hydration_window** | `meta['venue']`, `meta['wbgt_c']` | H6. Stamps `meta['hydration_required']` and `meta['hydration_tier']` (one of `safe`/`cooling`/`unsafe`/`severe`). The live engine reads `meta['temperature']` for the actual break schedule. |
+
+The venue table (`VENUE_RISK`) covers all 16 tournament venues with `wbgt_offset`,
+`ac` flag and `risk` tier; exactly 3 venues are climate-controlled. A companion
+helper `venue_effective_wbgt(venue, nominal)` returns the resolved WBGT after
+applying the offset and AC clamp.
+
+Because per-side symmetric penalties preserve total xG in the Poisson model
+(`expected_goals(80,80) == expected_goals(76,76)`), the engine also applies a
+**heat-pace multiplier** to total match xG after the factors run. Bands:
+
+| WBGT | Group | Knockout |
+|------|-------|----------|
+| < 26°C | 1.00 | 1.00 |
+| 26–28°C | 0.95 | 0.90 |
+| 28–30°C | 0.88 | 0.78 |
+| ≥ 30°C | 0.82 | 0.70 |
+
+This global brake is what delivers the empirical "fewer goals in heat"
+signal: in a 500-iteration Monte Carlo at Monterrey (30°C WBGT) vs. a cool
+baseline, total match goals drop by ~13–15% and knockout penalty-shootout
+probability rises by ~50% relative.
+
+Opt-in per match: pass `meta={'venue': 'Monterrey', 'wbgt_c': 30.0}` to
+`MatchSimulator.simulate(...)` / `monte_carlo(...)`. Without `meta` the
+factors are completely inactive. Use `enable_heat(registry, on=True/False)`
+to toggle the six heat factors at runtime.
+
 ### The intangibles model (the "no one knows" factor)
 
 The motivating case: a 41-year-old talisman's legs are a minus, but his

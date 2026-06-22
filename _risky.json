@@ -1,0 +1,35 @@
+[
+  {
+    "date": "2026-06-26",
+    "home": "Paraguay",
+    "away": "Australia",
+    "pick": "Australia",
+    "decimal_odds": 4.1020408163265305,
+    "model_pct": 0.4295,
+    "market_pct": 0.2437810945273632,
+    "edge": 0.18571890547263678,
+    "ev_per_eur": 1.191326530612245
+  },
+  {
+    "date": "2026-06-23",
+    "home": "Jordan",
+    "away": "Algeria",
+    "pick": "Jordan",
+    "decimal_odds": 6.483870967741935,
+    "model_pct": 0.3145,
+    "market_pct": 0.15422885572139305,
+    "edge": 0.16027114427860695,
+    "ev_per_eur": 1.3536774193548384
+  },
+  {
+    "date": "2026-06-25",
+    "home": "South Africa",
+    "away": "South Korea",
+    "pick": "South Africa",
+    "decimal_odds": 6.03030303030303,
+    "model_pct": 0.29,
+    "market_pct": 0.1658291457286432,
+    "edge": 0.12417085427135677,
+    "ev_per_eur": 1.0387878787878786
+  }
+]

@@ -549,6 +549,56 @@ def api_dashboard_html(qs: dict) -> str:
 
 # --- HTTP plumbing ----------------------------------------------------------
 
+
+
+
+
+def api_insights(body: dict) -> dict:
+    import urllib.request
+    import json
+    
+    question = body.get("question", "").strip()
+    model = body.get("model", "llama3.2").strip()
+    
+    if not question:
+        raise ValueError("Question is required.")
+        
+    try:
+        report_data = api_report({"title_iters": ["100"], "game_iters": ["50"]})
+        simplified_context = {
+            "standings": report_data.get("standings", []),
+            "odds_summary": {k: v.get("title_model") for k, v in report_data.get("odds", {}).items() if v.get("title_model", 0) > 0.01}
+        }
+    except Exception as e:
+        simplified_context = {"error": f"Could not load context: {e}"}
+        
+    prompt = f"You are a sports data analyst for the 2026 World Cup.\n\nHere is the current simulation context:\n{json.dumps(simplified_context, indent=2)}\n\nUser Question: {question}\n\nAnswer the user's question concisely based on the data provided."
+    
+    # Call local Ollama API
+    url = "http://localhost:11434/api/generate"
+    data = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False
+    }
+    
+    req = urllib.request.Request(url, json.dumps(data).encode("utf-8"), headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=120) as response:
+            result = json.loads(response.read().decode("utf-8"))
+            return {"answer": result.get("response", "(No response)")}
+    except urllib.error.HTTPError as e:
+        error_msg = e.read().decode("utf-8")
+        try:
+            parsed = json.loads(error_msg)
+            msg = parsed.get("error", str(e))
+            raise ValueError(f"Ollama API Error: {msg}")
+        except json.JSONDecodeError:
+            raise ValueError(f"Ollama API Error ({e.code}): {error_msg}")
+    except urllib.error.URLError as e:
+        raise ValueError(f"Could not connect to Ollama at localhost:11434. Is it running? ({e.reason})")
+    except Exception as e:
+        raise ValueError(f"Request failed: {str(e)}")
 class Handler(BaseHTTPRequestHandler):
     server_version = "worldcup-web/1.0"
 
@@ -627,6 +677,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/games/accuracy": api_games_accuracy,
             "/api/dashboard-live": api_dashboard_live,
             "/api/bets": api_bets,
+            "/api/insights": api_insights,
         }
         fn = routes.get(path)
         if fn is None:
@@ -817,6 +868,7 @@ const NAV=[
   ["bets","Polymarket: compare & bet",vBets],
   ["dashboard","Model-vs-market dashboard",vDashboard],
   ["update","Update data (live)",vUpdate],
+  ["insights","AI Insights",vInsights],
 ];
 
 async function get(p){const r=await fetch(p);const d=await r.json().catch(()=>({error:'bad response'}));if(d&&d.error)throw new Error(d.error);return d;}
@@ -1231,6 +1283,41 @@ function renderUpdate(d){
 }
 
 /* ---- bootstrap ---- */
+
+
+
+
+
+async function vInsights(){
+  const savedModel = localStorage.getItem('ollama_model') || 'llama3.2';
+  
+  setView(head('AI Insights','Ask questions using your local Ollama instance.')+`
+    <div class="panel">
+      <div style="margin-bottom:15px; display: flex; align-items: center; gap: 10px;">
+        <label style="font-weight: bold;">Model:</label>
+        <input type="text" id="ollamaModel" value="${esc(savedModel)}" placeholder="e.g. llama3.2" style="width:200px; padding:6px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
+      </div>
+      
+      <div style="margin-bottom:15px;">
+        <textarea id="aiQuestion" placeholder="E.g. Which team has the highest probability of winning Group G?" style="width:100%; height:100px; padding:12px; font-family:inherit; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
+      </div>
+      
+      <button id="aiAsk" class="btn btn-blue" style="padding: 8px 16px;">Ask AI</button>
+      <div id="aiOut" style="margin-top:20px; white-space:pre-wrap; line-height:1.6; font-size: 1.05em;"></div>
+    </div>
+  `);
+  
+  $('#ollamaModel').onchange = e => localStorage.setItem('ollama_model', e.target.value.trim());
+  
+  $('#aiAsk').onclick = () => run($('#aiAsk'), $('#aiOut'), 'Thinking...', async () => {
+    const q = $('#aiQuestion').value.trim();
+    if(!q) throw new Error("Please enter a question.");
+    const model = $('#ollamaModel').value.trim() || 'llama3.2';
+    
+    const d = await post('/api/insights', { question: q, model: model });
+    return `<div style="padding:15px; background:var(--bg2); border-radius:6px; border-left:4px solid var(--blue); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">${esc(d.answer)}</div>`;
+  });
+}
 function buildNav(){
   $('#nav').innerHTML=NAV.map(([id,label],i)=>`<button class="navbtn" data-id="${id}"><span class="n">${i+1}</span>${esc(label)}</button>`).join('');
   $$('.navbtn').forEach(b=>b.onclick=()=>{location.hash=b.dataset.id;});

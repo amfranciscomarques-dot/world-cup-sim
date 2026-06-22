@@ -10,7 +10,19 @@ from .base import (
     register,
     registered_classes,
 )
-from . import builtin  # noqa: F401  -- import for @register side effects
+from . import builtin, heat  # noqa: F401  -- import for @register side effects
+from .heat import (
+    VENUE_RISK,
+    HeatStaminaFactor,
+    HydrationWindowFactor,
+    KnockoutHeatDrawFactor,
+    PeakSpeedFactor,
+    PressIntensityFactor,
+    VenueAsymmetryFactor,
+    classify_wbgt,
+    enable_heat,
+    venue_effective_wbgt,
+)
 
 
 def default_registry() -> FactorRegistry:
@@ -34,4 +46,15 @@ __all__ = [
     "register",
     "registered_classes",
     "default_registry",
-]
+    # Heat module
+    "VENUE_RISK",
+    "HeatStaminaFactor",
+    "HydrationWindowFactor",
+    "KnockoutHeatDrawFactor",
+    "PeakSpeedFactor",
+    "PressIntensityFactor",
+    "VenueAsymmetryFactor",
+    "classify_wbgt",
+    "enable_heat",
+    "venue_effective_wbgt",
+]  # noqa: F401  -- re-exported names

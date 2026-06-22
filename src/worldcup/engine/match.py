@@ -15,6 +15,45 @@ from . import live, poisson
 KNOCKOUT_STAGES = {"R32", "R16", "QF", "SF", "F"}
 
 
+# Heat-pace multiplier: empirical literature (and our chunk H1) reports
+# that in WBGT > 28°C matches total distance + sprint frequency drop
+# substantially, which translates to fewer chances created and lower
+# total match xG. A symmetric attack/defense penalty alone cannot move
+# xG in this Poisson model (mathematically symmetric), so we apply a
+# global pace multiplier on top of per-team strength adjustments.
+#
+# WBGT bands -> xG multiplier:
+#   < 26°C           1.00  (no effect)
+#   26-28°C          0.95  (cooling break, mild)
+#   28-30°C          0.88  (unsafe)
+#   >= 30°C          0.82  (severe)
+def heat_pace_multiplier(wbgt: Optional[float], knockout: bool = False) -> float:
+    """Return a multiplier in (0, 1] applied to total match xG.
+
+    Knockout matches apply a stronger brake: the empirical r=0.82 correlation
+    between abnormal heat and penalty shootouts implies that knockout ties
+    flatten disproportionately in heat (both teams cautious → scorelines
+    compress → more ET-and-pens finishes).
+    """
+    if wbgt is None:
+        return 1.0
+    if knockout:
+        if wbgt >= 30.0:
+            return 0.70
+        if wbgt >= 28.0:
+            return 0.78
+        if wbgt >= 26.0:
+            return 0.90
+        return 1.0
+    if wbgt >= 30.0:
+        return 0.82
+    if wbgt >= 28.0:
+        return 0.88
+    if wbgt >= 26.0:
+        return 0.95
+    return 1.0
+
+
 @dataclass
 class MatchOdds:
     """Monte Carlo summary of a single fixture played many times.
@@ -108,6 +147,15 @@ class MatchSimulator:
 
         home_xg = poisson.expected_goals(ctx.home.attack, ctx.away.defense)
         away_xg = poisson.expected_goals(ctx.away.attack, ctx.home.defense)
+        # Apply heat-pace multiplier if WBGT was set in meta. This is the
+        # global brake that factors alone can't deliver (they only adjust
+        # per-side strength, which the Poisson model makes symmetric).
+        wbgt = (meta or {}).get("wbgt_c")
+        pace_mult = heat_pace_multiplier(wbgt, knockout=stage in KNOCKOUT_STAGES)
+        if pace_mult != 1.0:
+            home_xg *= pace_mult
+            away_xg *= pace_mult
+            ctx.meta["heat_pace_mult"] = pace_mult
         hg, ag = poisson.sample_score(home_xg, away_xg, self.rng)
 
         result = MatchResult(

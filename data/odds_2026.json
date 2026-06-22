@@ -199,7 +199,7 @@
     "R16": [
       {
         "team": "France",
-        "price": 0.865
+        "price": 0.87
       },
       {
         "team": "England",
@@ -223,15 +223,19 @@
       },
       {
         "team": "Mexico",
-        "price": 0.695
+        "price": 0.685
       },
       {
         "team": "Portugal",
-        "price": 0.69
+        "price": 0.685
       },
       {
         "team": "Brazil",
         "price": 0.645
+      },
+      {
+        "team": "Netherlands",
+        "price": 0.605
       },
       {
         "team": "Norway",
@@ -242,15 +246,11 @@
         "price": 0.595
       },
       {
-        "team": "Netherlands",
-        "price": 0.595
+        "team": "Colombia",
+        "price": 0.56
       },
       {
         "team": "Belgium",
-        "price": 0.555
-      },
-      {
-        "team": "Colombia",
         "price": 0.555
       },
       {
@@ -258,16 +258,20 @@
         "price": 0.52
       },
       {
-        "team": "Japan",
-        "price": 0.505
-      },
-      {
         "team": "Morocco",
         "price": 0.485
       },
       {
+        "team": "Japan",
+        "price": 0.485
+      },
+      {
+        "team": "Egypt",
+        "price": 0.405
+      },
+      {
         "team": "Croatia",
-        "price": 0.38
+        "price": 0.39
       },
       {
         "team": "South Korea",
@@ -278,36 +282,32 @@
         "price": 0.375
       },
       {
-        "team": "Egypt",
-        "price": 0.36
+        "team": "Austria",
+        "price": 0.325
       },
       {
         "team": "Australia",
-        "price": 0.33
-      },
-      {
-        "team": "Austria",
-        "price": 0.31
+        "price": 0.315
       },
       {
         "team": "Senegal",
         "price": 0.31
       },
       {
+        "team": "Paraguay",
+        "price": 0.245
+      },
+      {
         "team": "Sweden",
         "price": 0.245
       },
       {
-        "team": "Paraguay",
+        "team": "Iran",
         "price": 0.24
       },
       {
         "team": "Algeria",
-        "price": 0.23
-      },
-      {
-        "team": "Iran",
-        "price": 0.23
+        "price": 0.225
       },
       {
         "team": "Ghana",
@@ -318,24 +318,24 @@
         "price": 0.18
       },
       {
+        "team": "Bosnia-Herzegovina",
+        "price": 0.175
+      },
+      {
         "team": "DR Congo",
         "price": 0.17
       },
       {
-        "team": "Bosnia-Herzegovina",
+        "team": "Scotland",
         "price": 0.17
       },
       {
-        "team": "Scotland",
-        "price": 0.135
-      },
-      {
         "team": "Cape Verde",
-        "price": 0.1265
+        "price": 0.137
       },
       {
         "team": "Czechia",
-        "price": 0.11
+        "price": 0.115
       },
       {
         "team": "Ecuador",
@@ -343,39 +343,39 @@
       },
       {
         "team": "New Zealand",
-        "price": 0.055
-      },
-      {
-        "team": "Panama",
-        "price": 0.044
-      },
-      {
-        "team": "South Africa",
-        "price": 0.0425
+        "price": 0.05
       },
       {
         "team": "Saudi Arabia",
-        "price": 0.04
+        "price": 0.0495
+      },
+      {
+        "team": "Panama",
+        "price": 0.045
       },
       {
         "team": "Uzbekistan",
-        "price": 0.036
+        "price": 0.037
+      },
+      {
+        "team": "South Africa",
+        "price": 0.033
       },
       {
         "team": "Qatar",
-        "price": 0.0285
+        "price": 0.0295
       },
       {
         "team": "Iraq",
         "price": 0.0205
       },
       {
-        "team": "Curacao",
-        "price": 0.016
+        "team": "Jordan",
+        "price": 0.0195
       },
       {
-        "team": "Jordan",
-        "price": 0.0155
+        "team": "Curacao",
+        "price": 0.016
       },
       {
         "team": "Turkiye",
@@ -392,12 +392,12 @@
     ],
     "QF": [
       {
-        "team": "England",
-        "price": 0.64
+        "team": "Spain",
+        "price": 0.645
       },
       {
-        "team": "Spain",
-        "price": 0.63
+        "team": "England",
+        "price": 0.64
       },
       {
         "team": "France",
@@ -409,7 +409,7 @@
       },
       {
         "team": "USA",
-        "price": 0.52
+        "price": 0.495
       },
       {
         "team": "Brazil",
@@ -420,11 +420,11 @@
         "price": 0.43
       },
       {
-        "team": "Germany",
-        "price": 0.425
+        "team": "Portugal",
+        "price": 0.415
       },
       {
-        "team": "Portugal",
+        "team": "Germany",
         "price": 0.415
       },
       {
@@ -437,15 +437,15 @@
       },
       {
         "team": "Japan",
-        "price": 0.29
+        "price": 0.28
+      },
+      {
+        "team": "Mexico",
+        "price": 0.275
       },
       {
         "team": "Morocco",
         "price": 0.275
-      },
-      {
-        "team": "Mexico",
-        "price": 0.27
       },
       {
         "team": "Switzerland",
@@ -460,12 +460,12 @@
         "price": 0.185
       },
       {
-        "team": "Senegal",
-        "price": 0.145
+        "team": "Egypt",
+        "price": 0.155
       },
       {
-        "team": "Egypt",
-        "price": 0.14
+        "team": "Senegal",
+        "price": 0.145
       },
       {
         "team": "Ivory Coast",
@@ -473,7 +473,7 @@
       },
       {
         "team": "Austria",
-        "price": 0.13
+        "price": 0.125
       },
       {
         "team": "Croatia",
@@ -500,8 +500,12 @@
         "price": 0.075
       },
       {
+        "team": "Ecuador",
+        "price": 0.066
+      },
+      {
         "team": "Paraguay",
-        "price": 0.0655
+        "price": 0.0645
       },
       {
         "team": "Algeria",
@@ -517,15 +521,11 @@
       },
       {
         "team": "Iran",
-        "price": 0.053
+        "price": 0.0525
       },
       {
         "team": "Bosnia-Herzegovina",
         "price": 0.044
-      },
-      {
-        "team": "Ecuador",
-        "price": 0.0405
       },
       {
         "team": "DR Congo",
@@ -545,11 +545,11 @@
       },
       {
         "team": "Czechia",
-        "price": 0.0195
+        "price": 0.02
       },
       {
         "team": "Panama",
-        "price": 0.012
+        "price": 0.0155
       },
       {
         "team": "Curacao",
@@ -701,11 +701,11 @@
       },
       {
         "team": "Belgium",
-        "price": 0.24
+        "price": 0.245
       },
       {
         "team": "Iran",
-        "price": 0.1045
+        "price": 0.1025
       },
       {
         "team": "New Zealand",
@@ -723,7 +723,7 @@
       },
       {
         "team": "Cape Verde",
-        "price": 0.0275
+        "price": 0.0225
       },
       {
         "team": "Saudi Arabia",
@@ -741,7 +741,7 @@
       },
       {
         "team": "Senegal",
-        "price": 0.0155
+        "price": 0.011
       },
       {
         "team": "Iraq",
@@ -759,7 +759,7 @@
       },
       {
         "team": "Algeria",
-        "price": 0.0185
+        "price": 0.0175
       },
       {
         "team": "Jordan",
@@ -787,7 +787,7 @@
       },
       {
         "team": "Ghana",
-        "price": 0.044
+        "price": 0.0535
       },
       {
         "team": "Croatia",
@@ -1469,7 +1469,7 @@
       "live": [
         0.905,
         0.075,
-        0.0245
+        0.0235
       ],
       "pregame": null
     },
@@ -1662,9 +1662,9 @@
       "closed": false,
       "score": null,
       "live": [
-        0.505,
+        0.515,
         0.275,
-        0.225
+        0.215
       ],
       "pregame": null
     },
