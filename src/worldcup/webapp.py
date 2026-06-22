@@ -556,13 +556,13 @@ def api_dashboard_html(qs: dict) -> str:
 def api_insights(body: dict) -> dict:
     import urllib.request
     import json
-    
+
     question = body.get("question", "").strip()
     model = body.get("model", "llama3.2").strip()
-    
+
     if not question:
         raise ValueError("Question is required.")
-        
+
     try:
         report_data = api_report({"title_iters": ["100"], "game_iters": ["50"]})
         simplified_context = {
@@ -571,9 +571,9 @@ def api_insights(body: dict) -> dict:
         }
     except Exception as e:
         simplified_context = {"error": f"Could not load context: {e}"}
-        
+
     prompt = f"You are a sports data analyst for the 2026 World Cup.\n\nHere is the current simulation context:\n{json.dumps(simplified_context, indent=2)}\n\nUser Question: {question}\n\nAnswer the user's question concisely based on the data provided."
-    
+
     # Call local Ollama API
     url = "http://localhost:11434/api/generate"
     data = {
@@ -581,7 +581,7 @@ def api_insights(body: dict) -> dict:
         "prompt": prompt,
         "stream": False
     }
-    
+
     req = urllib.request.Request(url, json.dumps(data).encode("utf-8"), headers={"Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=120) as response:
@@ -1290,30 +1290,30 @@ function renderUpdate(d){
 
 async function vInsights(){
   const savedModel = localStorage.getItem('ollama_model') || 'llama3.2';
-  
+
   setView(head('AI Insights','Ask questions using your local Ollama instance.')+`
     <div class="panel">
       <div style="margin-bottom:15px; display: flex; align-items: center; gap: 10px;">
         <label style="font-weight: bold;">Model:</label>
         <input type="text" id="ollamaModel" value="${esc(savedModel)}" placeholder="e.g. llama3.2" style="width:200px; padding:6px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--text);">
       </div>
-      
+
       <div style="margin-bottom:15px;">
         <textarea id="aiQuestion" placeholder="E.g. Which team has the highest probability of winning Group G?" style="width:100%; height:100px; padding:12px; font-family:inherit; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); resize: vertical; box-sizing: border-box;"></textarea>
       </div>
-      
+
       <button id="aiAsk" class="btn btn-blue" style="padding: 8px 16px;">Ask AI</button>
       <div id="aiOut" style="margin-top:20px; white-space:pre-wrap; line-height:1.6; font-size: 1.05em;"></div>
     </div>
   `);
-  
+
   $('#ollamaModel').onchange = e => localStorage.setItem('ollama_model', e.target.value.trim());
-  
+
   $('#aiAsk').onclick = () => run($('#aiAsk'), $('#aiOut'), 'Thinking...', async () => {
     const q = $('#aiQuestion').value.trim();
     if(!q) throw new Error("Please enter a question.");
     const model = $('#ollamaModel').value.trim() || 'llama3.2';
-    
+
     const d = await post('/api/insights', { question: q, model: model });
     return `<div style="padding:15px; background:var(--bg2); border-radius:6px; border-left:4px solid var(--blue); box-shadow: 0 2px 5px rgba(0,0,0,0.1);">${esc(d.answer)}</div>`;
   });

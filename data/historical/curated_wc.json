@@ -1,0 +1,968 @@
+[
+  {
+    "home": "German DR",
+    "away": "Netherlands",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "1974-06-30"
+  },
+  {
+    "home": "Netherlands",
+    "away": "Germany",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "1974-07-07"
+  },
+  {
+    "home": "Netherlands",
+    "away": "Brazil",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "1974-07-03"
+  },
+  {
+    "home": "Netherlands",
+    "away": "Argentina",
+    "home_goals": 4,
+    "away_goals": 0,
+    "date": "1974-06-26"
+  },
+  {
+    "home": "Netherlands",
+    "away": "Sweden",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "1974-06-19"
+  },
+  {
+    "home": "German DR",
+    "away": "Germany",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "1974-06-22"
+  },
+  {
+    "home": "Argentina",
+    "away": "Belgium",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "1986-06-25"
+  },
+  {
+    "home": "Argentina",
+    "away": "Germany",
+    "home_goals": 3,
+    "away_goals": 2,
+    "date": "1986-06-29"
+  },
+  {
+    "home": "Argentina",
+    "away": "England",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "1986-06-22"
+  },
+  {
+    "home": "Brazil",
+    "away": "Argentina",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "1990-06-24"
+  },
+  {
+    "home": "Brazil",
+    "away": "Belgium",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-07-06"
+  },
+  {
+    "home": "Belgium",
+    "away": "Japan",
+    "home_goals": 3,
+    "away_goals": 2,
+    "date": "2018-07-02"
+  },
+  {
+    "home": "England",
+    "away": "Panama",
+    "home_goals": 6,
+    "away_goals": 1,
+    "date": "2018-06-24"
+  },
+  {
+    "home": "Poland",
+    "away": "Senegal",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-19"
+  },
+  {
+    "home": "Serbia",
+    "away": "Switzerland",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-22"
+  },
+  {
+    "home": "Sweden",
+    "away": "South Korea",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2018-06-18"
+  },
+  {
+    "home": "Germany",
+    "away": "Mexico",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-17"
+  },
+  {
+    "home": "Iran",
+    "away": "Spain",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-20"
+  },
+  {
+    "home": "Uruguay",
+    "away": "Saudi Arabia",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2018-06-20"
+  },
+  {
+    "home": "France",
+    "away": "Peru",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2018-06-21"
+  },
+  {
+    "home": "Argentina",
+    "away": "Croatia",
+    "home_goals": 0,
+    "away_goals": 3,
+    "date": "2018-06-21"
+  },
+  {
+    "home": "Colombia",
+    "away": "England",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2018-07-03"
+  },
+  {
+    "home": "Panama",
+    "away": "Tunisia",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-28"
+  },
+  {
+    "home": "Japan",
+    "away": "Poland",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-28"
+  },
+  {
+    "home": "Iceland",
+    "away": "Croatia",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-26"
+  },
+  {
+    "home": "Russia",
+    "away": "Egypt",
+    "home_goals": 3,
+    "away_goals": 1,
+    "date": "2018-06-19"
+  },
+  {
+    "home": "Argentina",
+    "away": "Iceland",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2018-06-16"
+  },
+  {
+    "home": "England",
+    "away": "Belgium",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-28"
+  },
+  {
+    "home": "Sweden",
+    "away": "Switzerland",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2018-07-03"
+  },
+  {
+    "home": "Iran",
+    "away": "Portugal",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2018-06-25"
+  },
+  {
+    "home": "Portugal",
+    "away": "Morocco",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2018-06-20"
+  },
+  {
+    "home": "Croatia",
+    "away": "England",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2018-07-11"
+  },
+  {
+    "home": "Brazil",
+    "away": "Costa Rica",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2018-06-22"
+  },
+  {
+    "home": "Egypt",
+    "away": "Uruguay",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-15"
+  },
+  {
+    "home": "South Korea",
+    "away": "Mexico",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-23"
+  },
+  {
+    "home": "Belgium",
+    "away": "Panama",
+    "home_goals": 3,
+    "away_goals": 0,
+    "date": "2018-06-18"
+  },
+  {
+    "home": "Poland",
+    "away": "Colombia",
+    "home_goals": 0,
+    "away_goals": 3,
+    "date": "2018-06-24"
+  },
+  {
+    "home": "Portugal",
+    "away": "Spain",
+    "home_goals": 3,
+    "away_goals": 3,
+    "date": "2018-06-15"
+  },
+  {
+    "home": "Serbia",
+    "away": "Brazil",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2018-06-27"
+  },
+  {
+    "home": "Germany",
+    "away": "Sweden",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2018-06-23"
+  },
+  {
+    "home": "Tunisia",
+    "away": "England",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-18"
+  },
+  {
+    "home": "France",
+    "away": "Argentina",
+    "home_goals": 4,
+    "away_goals": 3,
+    "date": "2018-06-30"
+  },
+  {
+    "home": "Croatia",
+    "away": "Denmark",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2018-07-01"
+  },
+  {
+    "home": "Nigeria",
+    "away": "Iceland",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2018-06-22"
+  },
+  {
+    "home": "Croatia",
+    "away": "Nigeria",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2018-06-16"
+  },
+  {
+    "home": "Australia",
+    "away": "Peru",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2018-06-26"
+  },
+  {
+    "home": "Senegal",
+    "away": "Colombia",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-28"
+  },
+  {
+    "home": "Switzerland",
+    "away": "Costa Rica",
+    "home_goals": 2,
+    "away_goals": 2,
+    "date": "2018-06-27"
+  },
+  {
+    "home": "France",
+    "away": "Australia",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2018-06-16"
+  },
+  {
+    "home": "Uruguay",
+    "away": "Russia",
+    "home_goals": 3,
+    "away_goals": 0,
+    "date": "2018-06-25"
+  },
+  {
+    "home": "Brazil",
+    "away": "Mexico",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2018-07-02"
+  },
+  {
+    "home": "Denmark",
+    "away": "Australia",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2018-06-21"
+  },
+  {
+    "home": "Costa Rica",
+    "away": "Serbia",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-17"
+  },
+  {
+    "home": "Uruguay",
+    "away": "France",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2018-07-06"
+  },
+  {
+    "home": "France",
+    "away": "Croatia",
+    "home_goals": 4,
+    "away_goals": 2,
+    "date": "2018-07-15"
+  },
+  {
+    "home": "Spain",
+    "away": "Russia",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2018-07-01"
+  },
+  {
+    "home": "Belgium",
+    "away": "Tunisia",
+    "home_goals": 5,
+    "away_goals": 2,
+    "date": "2018-06-23"
+  },
+  {
+    "home": "Peru",
+    "away": "Denmark",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-16"
+  },
+  {
+    "home": "Spain",
+    "away": "Morocco",
+    "home_goals": 2,
+    "away_goals": 2,
+    "date": "2018-06-25"
+  },
+  {
+    "home": "Brazil",
+    "away": "Switzerland",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2018-06-17"
+  },
+  {
+    "home": "Nigeria",
+    "away": "Argentina",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-26"
+  },
+  {
+    "home": "Uruguay",
+    "away": "Portugal",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2018-06-30"
+  },
+  {
+    "home": "Morocco",
+    "away": "Iran",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2018-06-15"
+  },
+  {
+    "home": "Russia",
+    "away": "Saudi Arabia",
+    "home_goals": 5,
+    "away_goals": 0,
+    "date": "2018-06-14"
+  },
+  {
+    "home": "Mexico",
+    "away": "Sweden",
+    "home_goals": 0,
+    "away_goals": 3,
+    "date": "2018-06-27"
+  },
+  {
+    "home": "Sweden",
+    "away": "England",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2018-07-07"
+  },
+  {
+    "home": "South Korea",
+    "away": "Germany",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2018-06-27"
+  },
+  {
+    "home": "Colombia",
+    "away": "Japan",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2018-06-19"
+  },
+  {
+    "home": "France",
+    "away": "Belgium",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2018-07-10"
+  },
+  {
+    "home": "Belgium",
+    "away": "England",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2018-07-14"
+  },
+  {
+    "home": "Russia",
+    "away": "Croatia",
+    "home_goals": 2,
+    "away_goals": 2,
+    "date": "2018-07-07"
+  },
+  {
+    "home": "Denmark",
+    "away": "France",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2018-06-26"
+  },
+  {
+    "home": "Japan",
+    "away": "Senegal",
+    "home_goals": 2,
+    "away_goals": 2,
+    "date": "2018-06-24"
+  },
+  {
+    "home": "Saudi Arabia",
+    "away": "Egypt",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2018-06-25"
+  },
+  {
+    "home": "Canada",
+    "away": "Morocco",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2022-12-01"
+  },
+  {
+    "home": "England",
+    "away": "Iran",
+    "home_goals": 6,
+    "away_goals": 2,
+    "date": "2022-11-21"
+  },
+  {
+    "home": "Croatia",
+    "away": "Belgium",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2022-12-01"
+  },
+  {
+    "home": "Netherlands",
+    "away": "Ecuador",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2022-11-25"
+  },
+  {
+    "home": "Japan",
+    "away": "Spain",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2022-12-01"
+  },
+  {
+    "home": "England",
+    "away": "USA",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2022-11-25"
+  },
+  {
+    "home": "Iran",
+    "away": "USA",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2022-11-29"
+  },
+  {
+    "home": "Morocco",
+    "away": "Croatia",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2022-11-23"
+  },
+  {
+    "home": "Wales",
+    "away": "Iran",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2022-11-25"
+  },
+  {
+    "home": "Tunisia",
+    "away": "France",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2022-11-30"
+  },
+  {
+    "home": "Wales",
+    "away": "England",
+    "home_goals": 0,
+    "away_goals": 3,
+    "date": "2022-11-29"
+  },
+  {
+    "home": "Switzerland",
+    "away": "Cameroon",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2022-11-24"
+  },
+  {
+    "home": "Portugal",
+    "away": "Ghana",
+    "home_goals": 3,
+    "away_goals": 2,
+    "date": "2022-11-24"
+  },
+  {
+    "home": "Senegal",
+    "away": "Netherlands",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2022-11-21"
+  },
+  {
+    "home": "USA",
+    "away": "Wales",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2022-11-21"
+  },
+  {
+    "home": "Poland",
+    "away": "Saudi Arabia",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2022-11-26"
+  },
+  {
+    "home": "Netherlands",
+    "away": "Qatar",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2022-11-29"
+  },
+  {
+    "home": "France",
+    "away": "Denmark",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2022-11-26"
+  },
+  {
+    "home": "Germany",
+    "away": "Japan",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2022-11-23"
+  },
+  {
+    "home": "Denmark",
+    "away": "Tunisia",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2022-11-22"
+  },
+  {
+    "home": "Mexico",
+    "away": "Poland",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2022-11-22"
+  },
+  {
+    "home": "Qatar",
+    "away": "Senegal",
+    "home_goals": 1,
+    "away_goals": 3,
+    "date": "2022-11-25"
+  },
+  {
+    "home": "Belgium",
+    "away": "Canada",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2022-11-23"
+  },
+  {
+    "home": "Brazil",
+    "away": "Switzerland",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2022-11-28"
+  },
+  {
+    "home": "Netherlands",
+    "away": "Argentina",
+    "home_goals": 2,
+    "away_goals": 2,
+    "date": "2022-12-09"
+  },
+  {
+    "home": "Costa Rica",
+    "away": "Germany",
+    "home_goals": 2,
+    "away_goals": 4,
+    "date": "2022-12-01"
+  },
+  {
+    "home": "Japan",
+    "away": "Costa Rica",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2022-11-27"
+  },
+  {
+    "home": "Argentina",
+    "away": "France",
+    "home_goals": 3,
+    "away_goals": 3,
+    "date": "2022-12-18"
+  },
+  {
+    "home": "Croatia",
+    "away": "Morocco",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2022-12-17"
+  },
+  {
+    "home": "Serbia",
+    "away": "Switzerland",
+    "home_goals": 2,
+    "away_goals": 3,
+    "date": "2022-12-02"
+  },
+  {
+    "home": "Argentina",
+    "away": "Australia",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2022-12-03"
+  },
+  {
+    "home": "Australia",
+    "away": "Denmark",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2022-11-30"
+  },
+  {
+    "home": "Brazil",
+    "away": "Serbia",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2022-11-24"
+  },
+  {
+    "home": "Tunisia",
+    "away": "Australia",
+    "home_goals": 0,
+    "away_goals": 1,
+    "date": "2022-11-26"
+  },
+  {
+    "home": "Ecuador",
+    "away": "Senegal",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2022-11-29"
+  },
+  {
+    "home": "Uruguay",
+    "away": "South Korea",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2022-11-24"
+  },
+  {
+    "home": "Morocco",
+    "away": "Portugal",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2022-12-10"
+  },
+  {
+    "home": "Saudi Arabia",
+    "away": "Mexico",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2022-11-30"
+  },
+  {
+    "home": "Poland",
+    "away": "Argentina",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2022-11-30"
+  },
+  {
+    "home": "Argentina",
+    "away": "Mexico",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2022-11-26"
+  },
+  {
+    "home": "Portugal",
+    "away": "Switzerland",
+    "home_goals": 6,
+    "away_goals": 1,
+    "date": "2022-12-06"
+  },
+  {
+    "home": "England",
+    "away": "Senegal",
+    "home_goals": 3,
+    "away_goals": 0,
+    "date": "2022-12-04"
+  },
+  {
+    "home": "Argentina",
+    "away": "Croatia",
+    "home_goals": 3,
+    "away_goals": 0,
+    "date": "2022-12-13"
+  },
+  {
+    "home": "England",
+    "away": "France",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2022-12-10"
+  },
+  {
+    "home": "France",
+    "away": "Morocco",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2022-12-14"
+  },
+  {
+    "home": "Croatia",
+    "away": "Brazil",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2022-12-09"
+  },
+  {
+    "home": "Morocco",
+    "away": "Spain",
+    "home_goals": 0,
+    "away_goals": 0,
+    "date": "2022-12-06"
+  },
+  {
+    "home": "Japan",
+    "away": "Croatia",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2022-12-05"
+  },
+  {
+    "home": "Brazil",
+    "away": "South Korea",
+    "home_goals": 4,
+    "away_goals": 1,
+    "date": "2022-12-05"
+  },
+  {
+    "home": "France",
+    "away": "Poland",
+    "home_goals": 3,
+    "away_goals": 1,
+    "date": "2022-12-04"
+  },
+  {
+    "home": "Netherlands",
+    "away": "USA",
+    "home_goals": 3,
+    "away_goals": 1,
+    "date": "2022-12-03"
+  },
+  {
+    "home": "Portugal",
+    "away": "Uruguay",
+    "home_goals": 2,
+    "away_goals": 0,
+    "date": "2022-11-28"
+  },
+  {
+    "home": "Spain",
+    "away": "Germany",
+    "home_goals": 1,
+    "away_goals": 1,
+    "date": "2022-11-27"
+  },
+  {
+    "home": "Cameroon",
+    "away": "Serbia",
+    "home_goals": 3,
+    "away_goals": 3,
+    "date": "2022-11-28"
+  },
+  {
+    "home": "Belgium",
+    "away": "Morocco",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2022-11-27"
+  },
+  {
+    "home": "Qatar",
+    "away": "Ecuador",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2022-11-20"
+  },
+  {
+    "home": "Argentina",
+    "away": "Saudi Arabia",
+    "home_goals": 1,
+    "away_goals": 2,
+    "date": "2022-11-22"
+  },
+  {
+    "home": "South Korea",
+    "away": "Ghana",
+    "home_goals": 2,
+    "away_goals": 3,
+    "date": "2022-11-28"
+  },
+  {
+    "home": "Ghana",
+    "away": "Uruguay",
+    "home_goals": 0,
+    "away_goals": 2,
+    "date": "2022-12-02"
+  },
+  {
+    "home": "Spain",
+    "away": "Costa Rica",
+    "home_goals": 7,
+    "away_goals": 0,
+    "date": "2022-11-23"
+  },
+  {
+    "home": "Croatia",
+    "away": "Canada",
+    "home_goals": 4,
+    "away_goals": 1,
+    "date": "2022-11-27"
+  },
+  {
+    "home": "Cameroon",
+    "away": "Brazil",
+    "home_goals": 1,
+    "away_goals": 0,
+    "date": "2022-12-02"
+  },
+  {
+    "home": "France",
+    "away": "Australia",
+    "home_goals": 4,
+    "away_goals": 1,
+    "date": "2022-11-22"
+  },
+  {
+    "home": "South Korea",
+    "away": "Portugal",
+    "home_goals": 2,
+    "away_goals": 1,
+    "date": "2022-12-02"
+  }
+]
