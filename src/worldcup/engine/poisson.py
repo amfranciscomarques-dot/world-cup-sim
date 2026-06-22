@@ -16,7 +16,9 @@ import random
 BASE_GOALS = 1.35
 # Sensitivity of xG to a one-point rating edge. ~0.035 gives a ~24-point gap
 # (e.g. 90 vs 66) an xG of ~3.1 against ~0.6 — a believable mismatch.
-RATING_COEFF = 0.035
+# Tuned on 2026-06-22 (N=1000, historical WC set): RATING_COEFF 0.035 -> 0.030.
+# Brier: 0.60271 -> 0.56633, Log-loss: 1.01205 -> 0.96272.
+RATING_COEFF = 0.030
 # Keep xG in a sane band so extreme ratings can't produce absurd blowouts.
 MIN_XG = 0.05
 MAX_XG = 6.0
